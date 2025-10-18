@@ -1,7 +1,8 @@
 # GOOD--3: Implement widget system with iframe and shortcut widgets
 
 **Created:** 2025-10-18T14:29:03.283203+00:00
-**Status:** Planning
+**Status:** Complete
+**Completed:** 2025-10-18
 
 ## Description
 
@@ -11,75 +12,75 @@ Create a flexible widget system using web components that supports iframe widget
 
 ### Backend - Widget Data Model & API
 
-- [ ] Widget data model defined with Pydantic schemas
-- [ ] Support for multiple widget types (iframe, shortcut, extensible for future types)
-- [ ] Widget properties stored as JSON/dict for flexibility
-- [ ] API endpoint: `GET /api/widgets` - List all widgets for current user
-- [ ] API endpoint: `POST /api/widgets` - Create new widget
-- [ ] API endpoint: `PUT /api/widgets/{id}` - Update widget properties
-- [ ] API endpoint: `DELETE /api/widgets/{id}` - Remove widget
-- [ ] API endpoint: `PATCH /api/widgets/{id}/position` - Update widget position/order
-- [ ] Backend tests for all widget endpoints (CRUD operations)
-- [ ] Widget data persisted (in-memory store acceptable for MVP, document future DB migration)
+- [x] Widget data model defined with Pydantic schemas
+- [x] Support for multiple widget types (iframe, shortcut, extensible for future types)
+- [x] Widget properties stored as JSON/dict for flexibility
+- [x] API endpoint: `GET /api/widgets` - List all widgets for current user
+- [x] API endpoint: `POST /api/widgets` - Create new widget
+- [x] API endpoint: `PUT /api/widgets/{id}` - Update widget properties
+- [x] API endpoint: `DELETE /api/widgets/{id}` - Remove widget
+- [x] API endpoint: `PATCH /api/widgets/{id}/position` - Update widget position/order
+- [x] Backend tests for all widget endpoints (CRUD operations) - 14 tests, all passing
+- [x] Widget data persisted (in-memory store acceptable for MVP, document future DB migration)
 
 ### Frontend - Web Component Architecture
 
-- [ ] Base widget web component class defined (shared functionality)
-- [ ] Web components use plain HTML/JS (no framework dependencies)
-- [ ] Web components registered with CustomElementRegistry
-- [ ] Widget view states implemented (normal, hover, edit)
-- [ ] Smooth transitions between view states
-- [ ] Widget container/grid system for layout
+- [x] Base widget web component class defined (shared functionality)
+- [x] Web components use plain HTML/JS (no framework dependencies)
+- [x] Web components registered with CustomElementRegistry
+- [x] Widget view states implemented (normal, hover, edit)
+- [x] Smooth transitions between view states
+- [x] Widget container/grid system for layout
 
 ### Iframe Widget Component
 
-- [ ] `<iframe-widget>` custom element created
-- [ ] Properties: iframe URL, title, width, height, refresh interval
-- [ ] Normal view: displays iframe with title
-- [ ] Hover view: shows edit and delete buttons
-- [ ] Edit view: form to update iframe URL, title, dimensions, refresh
-- [ ] Iframe sandboxing configured for security
-- [ ] Auto-refresh functionality (configurable interval)
-- [ ] Handles iframe loading states (loading indicator)
-- [ ] Examples from service-monitor can be embedded
+- [x] `<iframe-widget>` custom element created
+- [x] Properties: iframe URL, title, width, height, refresh interval
+- [x] Normal view: displays iframe with title
+- [x] Hover view: shows edit and delete buttons (in header, non-blocking)
+- [x] Edit view: form to update iframe URL, title, dimensions, refresh
+- [x] Iframe sandboxing configured for security
+- [x] Auto-refresh functionality (configurable interval)
+- [x] Handles iframe loading states (loading indicator)
+- [x] Examples from service-monitor can be embedded
 
 ### Shortcut Widget Component
 
-- [ ] `<shortcut-widget>` custom element created
-- [ ] Properties: URL, title, icon (URL or emoji), description
-- [ ] Normal view: displays icon, title, clickable link
-- [ ] Hover view: shows edit and delete buttons
-- [ ] Edit view: form to update URL, title, icon, description
-- [ ] Opens links in new tab with security attributes (noopener, noreferrer)
-- [ ] Default icon if none provided
-- [ ] Visual feedback on hover/click
+- [x] `<shortcut-widget>` custom element created
+- [x] Properties: URL, title, icon (URL or emoji), description
+- [x] Normal view: displays icon, title, clickable link
+- [x] Hover view: shows edit and delete buttons (top-right corner, non-blocking)
+- [x] Edit view: form to update URL, title, icon, description
+- [x] Opens links in new tab with security attributes (noopener, noreferrer)
+- [x] Default icon if none provided
+- [x] Visual feedback on hover/click
 
 ### Widget Management UI
 
-- [ ] "Add Widget" button/menu in main interface
-- [ ] Widget type selector (iframe vs shortcut)
-- [ ] Widget creation flow (select type → fill properties → save)
-- [ ] Delete confirmation dialog
-- [ ] Drag-and-drop to reorder widgets (optional for MVP, document if deferred)
-- [ ] Responsive grid layout that adapts to screen size
-- [ ] Widgets persist across page reloads
+- [x] "Add Widget" button/menu in main interface
+- [x] Widget type selector (iframe vs shortcut)
+- [x] Widget creation flow (select type → fill properties → save)
+- [x] Delete confirmation dialog
+- [x] Drag-and-drop to reorder widgets (deferred - documented in README)
+- [x] Responsive grid layout that adapts to screen size
+- [x] Widgets persist across page reloads
 
 ### Integration & Polish
 
-- [ ] Widgets load on page load via API call
-- [ ] New widgets appear immediately after creation (optimistic UI)
-- [ ] Widget updates reflect immediately
-- [ ] Widget deletion animates out smoothly
-- [ ] Error handling for failed API calls
-- [ ] Loading states while fetching widgets
-- [ ] Empty state when no widgets exist ("Add your first widget!")
-- [ ] Frontend tests for widget components
+- [x] Widgets load on page load via API call
+- [x] New widgets appear immediately after creation (optimistic UI)
+- [x] Widget updates reflect immediately
+- [x] Widget deletion animates out smoothly
+- [x] Error handling for failed API calls
+- [x] Loading states while fetching widgets
+- [x] Empty state when no widgets exist ("Add your first widget!")
+- [x] Frontend tests for widget components - 32 tests, all passing
 
 ### Documentation
 
-- [ ] Widget system architecture documented in code comments
-- [ ] README section on adding new widget types
-- [ ] Example widget configurations documented
+- [x] Widget system architecture documented in code comments
+- [x] README section on adding new widget types
+- [x] Example widget configurations documented
 
 ## Implementation Notes
 
@@ -447,6 +448,25 @@ describe('IframeWidget', () => {
 1. **Implement shortcut widget:** Second implementation, validate pattern
 1. **Build widget grid and management UI:** Bring it all together
 1. **Polish and test:** Smooth animations, error handling, comprehensive tests
+
+### Hover Interaction Fix (Implemented)
+
+**Issue:** Initial implementation used a full-coverage overlay (`widget-overlay`) on hover that blocked all widget content interaction. Users couldn't click shortcut links or interact with iframe content when hovering.
+
+**Solution:** Repositioned edit/delete buttons to avoid blocking content:
+
+- **Shortcut widgets:** Buttons appear in top-right corner (absolute positioning with `z-index: 10`)
+- **Iframe widgets:** Buttons appear in header next to title
+- Removed full-coverage overlay entirely
+- Enhanced button styling with backdrop blur and shadows for visibility over any content
+- Buttons only appear on hover (`display: none` → `display: flex`)
+
+**Code Changes:**
+
+- Updated `shortcut-widget.ts` and `iframe-widget.ts` hover view rendering
+- Modified CSS to use `.widget-action-buttons` instead of `.widget-overlay`
+- Added position-specific styling for each widget type
+- Reduced button size for less intrusion (smaller padding, font-size)
 
 ### Design Philosophy
 

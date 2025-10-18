@@ -94,3 +94,438 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Widget Grid Styles */
+#app {
+  max-width: 100%;
+  width: 100%;
+  padding: 2rem;
+  text-align: left;
+}
+
+.widget-grid-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.widget-grid-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.widget-grid-header h1 {
+  margin: 0;
+}
+
+.add-widget-btn {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.add-widget-btn:hover {
+  background-color: #535bf2;
+}
+
+.widget-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.widget-grid-loading,
+.widget-grid-error {
+  text-align: center;
+  padding: 3rem;
+}
+
+.retry-btn {
+  margin-top: 1rem;
+}
+
+/* Widget Container Styles */
+.widget-container {
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.widget-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.widget-header {
+  margin-bottom: 0.75rem;
+}
+
+.widget-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.widget-content {
+  position: relative;
+}
+
+/* Widget Hover State - Action Buttons */
+.widget-action-buttons {
+  display: none;
+  gap: 0.5rem;
+}
+
+.widget-hover:hover .widget-action-buttons {
+  display: flex;
+}
+
+.widget-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* For iframe widgets - buttons in header */
+.iframe-widget .widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.iframe-widget .widget-title {
+  margin: 0;
+  flex: 1;
+}
+
+/* For shortcut widgets - buttons in top-right corner */
+.shortcut-widget {
+  position: relative;
+}
+
+.shortcut-widget .widget-action-buttons {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+}
+
+.widget-btn {
+  background-color: rgba(255, 255, 255, 0.95);
+  border: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+}
+
+.widget-btn:hover {
+  background-color: white;
+  transform: scale(1.05);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.widget-btn:active {
+  transform: scale(0.98);
+}
+
+/* Widget Edit Mode */
+.widget-edit {
+  background-color: #2a2a2a;
+}
+
+.widget-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #1a1a1a;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.form-buttons-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Iframe Widget Specific */
+.iframe-widget iframe {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background-color: white;
+}
+
+/* Shortcut Widget Specific */
+.shortcut-widget {
+  min-height: 120px;
+}
+
+.shortcut-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.2s;
+  border-radius: 8px;
+}
+
+.shortcut-link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.shortcut-icon {
+  font-size: 3rem;
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2a2a2a;
+  border-radius: 12px;
+}
+
+.shortcut-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.shortcut-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.shortcut-description {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}
+
+/* Dialog/Modal Styles */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dialog-container {
+  background-color: #2a2a2a;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #444;
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.dialog-close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.dialog-close-btn:hover {
+  color: white;
+}
+
+.dialog-content {
+  padding: 1.5rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-cancel {
+  background-color: #444;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #555;
+}
+
+.btn-primary {
+  background-color: #646cff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #535bf2;
+}
+
+.type-specific-fields {
+  margin-top: 1rem;
+}
+
+/* Light Mode Adjustments */
+@media (prefers-color-scheme: light) {
+  .widget-container {
+    background-color: #f5f5f5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .widget-edit {
+    background-color: #e8e8e8;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background-color: white;
+    color: #213547;
+    border-color: #ddd;
+  }
+
+  .shortcut-icon {
+    background-color: #e0e0e0;
+  }
+
+  .shortcut-title {
+    color: #213547;
+  }
+
+  .shortcut-description {
+    color: #666;
+  }
+
+  .dialog-container {
+    background-color: white;
+    border: 1px solid #ddd;
+  }
+
+  .dialog-header {
+    border-bottom-color: #ddd;
+  }
+
+  .dialog-close-btn {
+    color: #666;
+  }
+
+  .dialog-close-btn:hover {
+    color: #213547;
+  }
+
+  .btn-cancel {
+    background-color: #e0e0e0;
+    color: #213547;
+  }
+
+  .btn-cancel:hover {
+    background-color: #d0d0d0;
+  }
+}

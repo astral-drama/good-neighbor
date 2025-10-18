@@ -11,12 +11,26 @@ A customizable homepage widget manager with OAuth authentication, user preferenc
 - **Testing:** Vitest (frontend) + pytest (backend) with 80% coverage minimum
 - **Code Quality:** ESLint + Ruff with pre-commit hooks
 
+### Current Features
+
+- **Widget System:** Full CRUD operations for iframe and shortcut widgets
+  - Iframe widgets for embedding external content (e.g., service monitors)
+  - Shortcut widgets for quick links with custom icons and descriptions
+  - Drag-and-drop repositioning (coming soon)
+  - Inline editing with live preview
+  - Auto-refresh for iframe widgets
+- **Web Components:** Framework-agnostic custom elements
+  - State management (normal, hover, edit)
+  - Built-in security (HTML escaping, iframe sandboxing)
+  - Responsive grid layout
+
 ### Planned Features
 
 - OAuth authentication for multi-user support
-- Customizable widget system (iframes + native widgets)
 - Link click tracking and analytics
 - User preference persistence across devices
+- Drag-and-drop widget repositioning
+- Database persistence (currently in-memory)
 
 ## Quick Start
 
@@ -93,6 +107,119 @@ make dev  # Runs both servers (if configured)
 ```
 
 The Vite dev server will proxy `/api/*` requests to the Python backend at `localhost:8000`.
+
+## Widget System
+
+The widget system provides a flexible way to create customizable homepage widgets using plain Web Components (no framework dependencies).
+
+### Widget Types
+
+#### Iframe Widget
+
+Embeds external content in a sandboxed iframe.
+
+**Properties:**
+
+- `url` (required): URL of the content to embed
+- `title` (required): Display title for the widget
+- `width` (default: 400): Width in pixels
+- `height` (default: 300): Height in pixels
+- `refresh_interval` (optional): Auto-refresh interval in seconds
+
+**Example API Request:**
+
+```json
+{
+  "type": "iframe",
+  "properties": {
+    "url": "https://status.example.com",
+    "title": "Service Monitor",
+    "width": 600,
+    "height": 400,
+    "refresh_interval": 60
+  }
+}
+```
+
+#### Shortcut Widget
+
+Creates a clickable link with icon and description.
+
+**Properties:**
+
+- `url` (required): Target URL for the shortcut
+- `title` (required): Display title
+- `icon` (default: 🔗): Icon (emoji or image URL)
+- `description` (optional): Optional description text
+
+**Example API Request:**
+
+```json
+{
+  "type": "shortcut",
+  "properties": {
+    "url": "https://github.com",
+    "title": "GitHub",
+    "icon": "🐙",
+    "description": "Code hosting and collaboration"
+  }
+}
+```
+
+### Widget Interactions
+
+**Normal View:** Displays the widget content
+
+**Hover View:** Shows edit and delete buttons when hovering over a widget
+
+**Edit View:** Inline form for editing widget properties
+
+### Security Features
+
+- **HTML Escaping:** All user-provided text is escaped to prevent XSS
+- **Iframe Sandboxing:** Iframes use `sandbox="allow-scripts allow-same-origin allow-forms"`
+- **External Links:** Shortcuts use `rel="noopener noreferrer"` for security
+
+### API Endpoints
+
+#### Widget CRUD Operations
+
+- `GET /api/widgets` - List all widgets (sorted by position)
+- `POST /api/widgets` - Create a new widget
+- `GET /api/widgets/{widget_id}` - Get a specific widget
+- `PUT /api/widgets/{widget_id}` - Update widget properties
+- `PATCH /api/widgets/{widget_id}/position` - Update widget position
+- `DELETE /api/widgets/{widget_id}` - Delete a widget
+
+**Example: Creating a Widget**
+
+```bash
+curl -X POST http://localhost:8000/api/widgets \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "shortcut",
+    "properties": {
+      "url": "https://example.com",
+      "title": "Example Site",
+      "icon": "🌐",
+      "description": "An example shortcut"
+    }
+  }'
+```
+
+**Example: Updating a Widget**
+
+```bash
+curl -X PUT http://localhost:8000/api/widgets/{widget_id} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "properties": {
+      "url": "https://updated.com",
+      "title": "Updated Title",
+      "icon": "⭐"
+    }
+  }'
+```
 
 ### Testing
 
@@ -174,19 +301,36 @@ python -m good_neighbor.server
 good-neighbor/
 ├── frontend/                       # Vite + TypeScript frontend
 │   ├── src/
+│   │   ├── components/            # Web Components
+│   │   │   ├── base-widget.ts     # Abstract base class for widgets
+│   │   │   ├── iframe-widget.ts   # Iframe widget component
+│   │   │   ├── shortcut-widget.ts # Shortcut widget component
+│   │   │   ├── widget-grid.ts     # Widget container/grid
+│   │   │   ├── add-widget-dialog.ts # Widget creation dialog
+│   │   │   └── *.test.ts          # Component tests
+│   │   ├── services/              # API service layer
+│   │   │   ├── widget-api.ts      # Widget API client
+│   │   │   └── widget-api.test.ts # API client tests
+│   │   ├── types/                 # TypeScript type definitions
+│   │   │   └── widget.ts          # Widget types (matches backend)
 │   │   ├── main.ts                # Application entry point
 │   │   ├── main.test.ts           # Frontend tests
-│   │   └── style.css              # Styles
+│   │   └── style.css              # Styles (including widget styles)
 │   ├── vite.config.ts             # Vite configuration with API proxy
 │   ├── tsconfig.json              # TypeScript configuration
 │   ├── eslint.config.js           # ESLint configuration
 │   └── package.json               # Frontend dependencies
 ├── src/good_neighbor/             # Python backend
+│   ├── api/                       # API routers
+│   │   └── widgets.py             # Widget CRUD endpoints
+│   ├── models/                    # Pydantic models
+│   │   └── widget.py              # Widget data models
 │   ├── __init__.py
 │   ├── server.py                  # FastAPI server
 │   └── core.py                    # Core business logic
 ├── tests/                         # Backend tests
 │   ├── test_server.py             # API endpoint tests
+│   ├── test_widget_api.py         # Widget API tests (14 tests)
 │   └── test_core.py               # Core logic tests
 ├── dist/                          # Frontend build output (gitignored)
 ├── .filter/                       # Kanban project management
@@ -209,10 +353,11 @@ good-neighbor/
 - Python server serves static files from `dist/` AND handles API requests
 - Single deployment with FastAPI serving everything
 
-### API Endpoints
+## Test Coverage
 
-- `GET /api/health` - Health check endpoint
-- More endpoints coming soon (authentication, widgets, preferences, analytics)
+- **Backend:** 40 tests with 90% coverage
+- **Frontend:** 32 tests covering all widget components
+- All code passes strict linting (ESLint + Ruff) and type checking (TypeScript + mypy)
 
 ## Contributing
 

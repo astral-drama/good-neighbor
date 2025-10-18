@@ -1,27 +1,26 @@
 import './style.css'
+import { WidgetGrid } from './components/widget-grid'
+import { AddWidgetDialog } from './components/add-widget-dialog'
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 
-app.innerHTML = `
-  <div>
-    <h1>Good Neighbor</h1>
-    <p>Welcome to your customizable homepage Seth!</p>
-    <div id="api-status">
-      <p>Checking API connection...</p>
-    </div>
-  </div>
-`
+// Clear default content
+app.innerHTML = ''
 
-// Test API connection
-async function checkAPI() {
-  const statusDiv = document.querySelector('#api-status')!
-  try {
-    const response = await fetch('/api/health')
-    const data: unknown = await response.json()
-    statusDiv.innerHTML = `<p style="color: green;">✓ API Connected: ${JSON.stringify(data)}</p>`
-  } catch {
-    statusDiv.innerHTML = `<p style="color: orange;">⚠ API not available (this is normal in dev mode before backend starts)</p>`
-  }
-}
+// Create and mount widget grid
+const widgetGrid = new WidgetGrid()
+app.appendChild(widgetGrid)
 
-void checkAPI()
+// Create and mount add widget dialog
+const addWidgetDialog = new AddWidgetDialog()
+app.appendChild(addWidgetDialog)
+
+// Handle add widget requests from the grid
+app.addEventListener('add-widget-requested', () => {
+  addWidgetDialog.open()
+})
+
+// Handle widget creation events from the dialog
+app.addEventListener('widget-created', () => {
+  void widgetGrid.refresh()
+})
