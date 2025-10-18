@@ -143,13 +143,13 @@ Embeds external content in a sandboxed iframe.
 
 #### Shortcut Widget
 
-Creates a clickable link with icon and description.
+Creates a clickable link with icon and description. **Automatic favicon fetching** is supported - when creating a shortcut with the default icon (🔗), the system will automatically fetch and display the website's favicon.
 
 **Properties:**
 
 - `url` (required): Target URL for the shortcut
 - `title` (required): Display title
-- `icon` (default: 🔗): Icon (emoji or image URL)
+- `icon` (default: 🔗): Icon (emoji, image URL, or auto-fetched favicon)
 - `description` (optional): Optional description text
 
 **Example API Request:**
@@ -165,6 +165,16 @@ Creates a clickable link with icon and description.
   }
 }
 ```
+
+**Automatic Favicon Fetching:**
+
+- Leave `icon` as "🔗" (or omit it) to auto-fetch the website's favicon
+- The system tries multiple strategies:
+  1. Parse HTML for `<link rel="icon">` tags
+  1. Try default locations (`/favicon.ico`, `/favicon.png`, etc.)
+  1. Fall back to Google's favicon service
+- Favicons are cached server-side for 24 hours
+- Supported formats: PNG, ICO, SVG, and more
 
 ### Widget Interactions
 
@@ -220,6 +230,39 @@ curl -X PUT http://localhost:8000/api/widgets/{widget_id} \
     }
   }'
 ```
+
+#### Favicon API
+
+- `GET /api/favicon/?url={url}` - Fetch favicon for a given URL
+- `DELETE /api/favicon/cache?domain={domain}` - Clear favicon cache (optional domain parameter)
+- `GET /api/favicon/stats` - Get favicon cache statistics
+
+**Example: Fetching a Favicon**
+
+```bash
+curl "http://localhost:8000/api/favicon/?url=https://github.com"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "favicon": "data:image/png;base64,iVBORw0KG...",
+  "format": "png",
+  "source": "https://github.com/favicon.ico",
+  "error": null
+}
+```
+
+**Features:**
+
+- Multi-strategy discovery (HTML parsing → default locations → Google fallback)
+- Server-side caching with 24-hour TTL
+- Base64 data URLs (avoids CORS issues)
+- Support for PNG, ICO, SVG, and other image formats
+- Automatic size validation (max 100KB)
+- Cache management endpoints for manual cache control
 
 ### Testing
 
@@ -355,7 +398,9 @@ good-neighbor/
 
 ## Test Coverage
 
-- **Backend:** 40 tests with 90% coverage
+- **Backend:** 83 tests with comprehensive coverage
+  - 43 favicon service tests (API, cache, and service layer)
+  - 40 widget and core functionality tests
 - **Frontend:** 32 tests covering all widget components
 - All code passes strict linting (ESLint + Ruff) and type checking (TypeScript + mypy)
 

@@ -26,6 +26,8 @@ dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.32.0",
     "python-multipart>=0.0.9",
+    "httpx>=0.27.0",
+    "beautifulsoup4>=4.12.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -38,6 +40,7 @@ where = ["src"]
 dev = [
     "pytest>=8.0.0",
     "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.24.0",    # Async test support
     "httpx>=0.27.0",             # Required for TestClient
     "ruff>=0.8.0",
     "mdformat>=0.7.0",           # Markdown formatter
@@ -175,6 +178,7 @@ explicit_package_bases = true
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
+disable_error_code = "misc"
 
 [[tool.mypy.overrides]]
 module = "pydantic.*"
@@ -200,4 +204,9 @@ addopts = [
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
+    "asyncio: marks tests as async (requires pytest-asyncio)",
 ]
+
+[tool.pytest_asyncio]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

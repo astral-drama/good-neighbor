@@ -94,7 +94,21 @@ export class AddWidgetDialog extends HTMLElement {
                 </div>
                 <div class="form-group">
                   <label for="shortcut-icon">Icon (emoji or URL):</label>
-                  <input type="text" id="shortcut-icon" name="shortcut_icon" value="🔗" />
+                  <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
+                    <div style="flex: 1;">
+                      <input type="text" id="shortcut-icon" name="shortcut_icon" value="🔗" />
+                      <small style="display: block; color: #666; font-size: 0.85rem; margin-top: 0.25rem;">
+                        Leave as 🔗 to auto-fetch favicon, or enter custom emoji/URL
+                      </small>
+                    </div>
+                    <button type="button" class="widget-btn fetch-favicon-btn" title="Fetch favicon from URL">
+                      🔍 Fetch
+                    </button>
+                  </div>
+                  <div class="favicon-preview" style="display: none; margin-top: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px;">
+                    <small style="color: #888;">Preview:</small>
+                    <div class="favicon-preview-icon" style="margin-top: 0.25rem;"></div>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="shortcut-description">Description:</label>
@@ -147,6 +161,14 @@ export class AddWidgetDialog extends HTMLElement {
       event.preventDefault()
       void this.handleSubmit()
     })
+
+    // Fetch favicon button
+    this.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement
+      if (target.classList.contains('fetch-favicon-btn')) {
+        void this.handleFetchFavicon()
+      }
+    })
   }
 
   /**
@@ -175,6 +197,64 @@ export class AddWidgetDialog extends HTMLElement {
 
     if (urlField) urlField.required = required
     if (titleField) titleField.required = required
+  }
+
+  /**
+   * Handle favicon fetch button click
+   */
+  private async handleFetchFavicon(): Promise<void> {
+    const urlInput = this.querySelector('#shortcut-url') as HTMLInputElement
+    const iconInput = this.querySelector('#shortcut-icon') as HTMLInputElement
+    const fetchBtn = this.querySelector('.fetch-favicon-btn') as HTMLButtonElement
+    const previewContainer = this.querySelector('.favicon-preview') as HTMLElement
+    const previewIcon = this.querySelector('.favicon-preview-icon') as HTMLElement
+
+    if (!urlInput || !iconInput || !fetchBtn || !previewContainer || !previewIcon) {
+      return
+    }
+
+    const url = urlInput.value.trim()
+    if (!url) {
+      alert('Please enter a URL first')
+      return
+    }
+
+    // Disable button and show loading state
+    fetchBtn.disabled = true
+    const originalText = fetchBtn.textContent
+    fetchBtn.textContent = '⏳ Fetching...'
+
+    try {
+      const response = await fetch(`/api/favicon/?url=${encodeURIComponent(url)}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch favicon')
+      }
+
+      const data = await response.json()
+      if (data.success && data.favicon) {
+        // Update icon input with favicon data URL
+        iconInput.value = data.favicon
+
+        // Show preview
+        if (data.favicon.startsWith('data:')) {
+          previewIcon.innerHTML = `<img src="${data.favicon}" alt="favicon" style="width: 48px; height: 48px; object-fit: contain; border-radius: 4px;" />`
+        } else {
+          previewIcon.innerHTML = `<span style="font-size: 2rem;">${data.favicon}</span>`
+        }
+        previewContainer.style.display = 'block'
+
+        // Show success message
+        alert(`Favicon fetched successfully from ${data.source}!`)
+      } else {
+        alert('No favicon found for this URL. Using default icon.')
+      }
+    } catch (error) {
+      console.error('Error fetching favicon:', error)
+      alert('Failed to fetch favicon. Please try again or enter a custom icon.')
+    } finally {
+      fetchBtn.disabled = false
+      fetchBtn.textContent = originalText
+    }
   }
 
   /**

@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from good_neighbor.api.favicon import router as favicon_router
 from good_neighbor.api.widgets import router as widgets_router
 
 logger = logging.getLogger(__name__)
@@ -30,6 +31,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(widgets_router)
+app.include_router(favicon_router)
 
 
 @app.get("/api/health")  # type: ignore[misc]
