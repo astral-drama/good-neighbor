@@ -23,6 +23,9 @@ classifiers = [
 dependencies = [
     "requests",
     "pydantic>=2.0.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "python-multipart>=0.0.9",
 ]
 
 [tool.setuptools.packages.find]
@@ -35,6 +38,7 @@ where = ["src"]
 dev = [
     "pytest>=8.0.0",
     "pytest-cov>=4.0.0",
+    "httpx>=0.27.0",             # Required for TestClient
     "ruff>=0.8.0",
     "mdformat>=0.7.0",           # Markdown formatter
     "mdformat-gfm>=0.3.0",      # GitHub Flavored Markdown support
