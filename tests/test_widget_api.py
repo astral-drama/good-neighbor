@@ -2,7 +2,7 @@
 
 from fastapi.testclient import TestClient
 
-from good_neighbor.api.widgets import widgets_store
+from good_neighbor.api.widgets import repos
 from good_neighbor.server import app
 
 client = TestClient(app)
@@ -10,7 +10,11 @@ client = TestClient(app)
 
 def setup_function() -> None:
     """Clear widget store before each test."""
-    widgets_store.clear()
+    # Clear all widgets from storage
+    widgets = repos.storage.get_widgets()
+    for widget_id in list(widgets.keys()):
+        repos.storage.delete_widget(widget_id)
+    repos.storage.save()
 
 
 def test_list_widgets_empty() -> None:
