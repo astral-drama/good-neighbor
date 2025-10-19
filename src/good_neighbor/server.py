@@ -1,6 +1,8 @@
 """FastAPI server for Good Neighbor homepage manager."""
 
 import logging
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -14,6 +16,9 @@ from good_neighbor.api.homepages import router as homepages_router
 from good_neighbor.api.widgets import router as widgets_router
 
 logger = logging.getLogger(__name__)
+
+# Track server start time for uptime calculation
+SERVER_START_TIME = time.time()
 
 # Create FastAPI app
 app = FastAPI(
@@ -44,13 +49,47 @@ app.include_router(favicon_router)
 async def health_check() -> dict[str, Any]:
     """Health check endpoint.
 
+    Returns comprehensive health status including:
+    - Service status
+    - Version
+    - Uptime
+    - Current timestamp
+    - Storage backend status
+
     Returns:
         dict: Health status information
     """
+    # Calculate uptime
+    uptime_seconds = time.time() - SERVER_START_TIME
+    uptime_hours = uptime_seconds / 3600
+    uptime_days = uptime_hours / 24
+
+    # Check storage backend
+    storage_status = "unknown"
+    try:
+        from good_neighbor.storage.yaml_storage import YamlStorage
+
+        storage = YamlStorage()
+        # Try to list homepages as a simple health check
+        _ = storage.list_homepages()
+        storage_status = "healthy"
+    except Exception as e:
+        logger.warning("Storage health check failed: %s", e)
+        storage_status = "unhealthy"
+
     return {
         "status": "healthy",
         "service": "good-neighbor",
         "version": "0.1.0",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "uptime": {
+            "seconds": round(uptime_seconds, 2),
+            "hours": round(uptime_hours, 2),
+            "days": round(uptime_days, 2),
+        },
+        "storage": {
+            "status": storage_status,
+        },
     }
 
 
