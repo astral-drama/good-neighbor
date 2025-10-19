@@ -188,6 +188,7 @@ frontend/dist/
 # Storage files
 storage.yaml
 storage.yaml.backup
+test-storage.yaml
 *.yaml.tmp
 test-browser.mjs
 test-screenshot.png
