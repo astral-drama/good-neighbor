@@ -11,7 +11,6 @@ app.innerHTML = ''
 // Create header with homepage selector
 const header = document.createElement('header')
 header.className = 'app-header'
-header.innerHTML = '<h1>Good Neighbor</h1>'
 
 const homepageSelector = new HomepageSelector()
 header.appendChild(homepageSelector)
