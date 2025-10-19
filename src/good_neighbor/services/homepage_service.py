@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from good_neighbor.effects import IO, Effect, ErrorDetails, Failure, Result
+from good_neighbor.effects import IO, Effect, ErrorDetails, Failure, Pure, Result, Success
 from good_neighbor.models import Homepage, HomepageId, UserId
 from good_neighbor.storage import HomepageRepository
 
@@ -100,21 +100,27 @@ class HomepageService:
 
         if not is_default:
             # Simple case: just insert the homepage
-            return self.homepage_repo.insert(new_homepage).map(lambda _: new_homepage)
+            return self.homepage_repo.insert(new_homepage).map(lambda result: result.map(lambda _: new_homepage))
 
         # If setting as default, unset existing default first
         def _create_default(existing: Homepage | None) -> IO[Result[ErrorDetails, Homepage]]:
             if existing is None:
                 # No existing default, just insert
-                return self.homepage_repo.insert(new_homepage).map(lambda _: new_homepage)
+                return self.homepage_repo.insert(new_homepage).map(lambda result: result.map(lambda _: new_homepage))
 
             # Unset existing default, then insert new one
             return self.homepage_repo.update(existing.homepage_id, lambda hp: hp.unset_as_default()).flat_map(
-                lambda _: self.homepage_repo.insert(new_homepage).map(lambda _: new_homepage)
+                lambda update_result: (
+                    self.homepage_repo.insert(new_homepage).map(
+                        lambda insert_result: insert_result.map(lambda _: new_homepage)
+                    )
+                    if isinstance(update_result, Success)
+                    else Pure(update_result)
+                )
             )
 
         return self.homepage_repo.get_default_for_user(user_id).flat_map(
-            lambda result: result.flat_map(_create_default)
+            lambda result: _create_default(result.value) if isinstance(result, Success) else Pure(result)
         )
 
     def update_homepage_name(self, homepage_id: HomepageId, new_name: str) -> IO[Result[ErrorDetails, None]]:

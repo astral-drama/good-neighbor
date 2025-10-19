@@ -537,3 +537,194 @@ button:focus-visible {
     background-color: #d0d0d0;
   }
 }
+
+/* Homepage Selector Styles */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.app-header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.homepage-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.selector-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.homepage-select {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.homepage-select:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.homepage-select:focus {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
+}
+
+.manage-btn {
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.manage-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Homepage Management Dialog */
+.homepage-manage-dialog {
+  background: #1a1a1a;
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+}
+
+.homepage-manage-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dialog-content {
+  padding: 1.5rem;
+}
+
+.homepage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.homepage-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.homepage-name {
+  flex: 1;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.87);
+  font-size: 1rem;
+}
+
+.homepage-name:focus {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.set-default-btn,
+.delete-btn {
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.set-default-btn:hover:not(:disabled),
+.delete-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.set-default-btn.active {
+  background: rgba(100, 108, 255, 0.3);
+  border-color: #646cff;
+}
+
+.set-default-btn:disabled,
+.delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.add-homepage-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(100, 108, 255, 0.2);
+  border: 1px solid #646cff;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.87);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.add-homepage-btn:hover {
+  background: rgba(100, 108, 255, 0.3);
+}
