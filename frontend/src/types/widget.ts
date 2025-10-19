@@ -2,10 +2,12 @@
  * Widget type definitions matching backend Pydantic models
  */
 
-export enum WidgetType {
-  IFRAME = 'iframe',
-  SHORTCUT = 'shortcut',
-}
+export const WidgetType = {
+  IFRAME: 'iframe',
+  SHORTCUT: 'shortcut',
+} as const;
+
+export type WidgetType = typeof WidgetType[keyof typeof WidgetType];
 
 export interface Widget {
   id: string

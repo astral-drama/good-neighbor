@@ -8,12 +8,17 @@ import type { Widget } from '../types/widget'
 import { WidgetType } from '../types/widget'
 import './iframe-widget'
 import './shortcut-widget'
+import './widget-container'
+import { WidgetContainer } from './widget-container'
 
 export class WidgetGrid extends HTMLElement {
   private widgets: Widget[] = []
   private isLoading: boolean = false
+  private containerOrder: WidgetType[] = []
+  private readonly CONTAINER_ORDER_KEY = 'widget-container-order'
 
   connectedCallback(): void {
+    this.loadContainerOrder()
     this.render()
     void this.loadWidgets()
     this.attachEventListeners()
@@ -45,7 +50,7 @@ export class WidgetGrid extends HTMLElement {
   }
 
   /**
-   * Render the grid and all widgets
+   * Render the grid and all widgets organized by container
    */
   private render(): void {
     if (this.isLoading) {
@@ -65,18 +70,13 @@ export class WidgetGrid extends HTMLElement {
           <h1>Good Neighbor</h1>
           <button class="add-widget-btn" title="Add widget">+ Add Widget</button>
         </div>
-        <div class="widget-grid"></div>
+        <div class="widget-containers"></div>
       </div>
     `
 
-    const grid = this.querySelector('.widget-grid')
-    if (grid) {
-      this.widgets.forEach((widget) => {
-        const widgetElement = this.createWidgetElement(widget)
-        if (widgetElement) {
-          grid.appendChild(widgetElement)
-        }
-      })
+    const containersArea = this.querySelector('.widget-containers')
+    if (containersArea) {
+      this.renderContainers(containersArea)
     }
 
     // Attach click handler to add widget button
@@ -86,6 +86,67 @@ export class WidgetGrid extends HTMLElement {
         this.dispatchEvent(new CustomEvent('add-widget-requested', { bubbles: true }))
       })
     }
+  }
+
+  /**
+   * Render widget containers grouped by type
+   */
+  private renderContainers(containersArea: Element): void {
+    // Group widgets by type
+    const widgetsByType = this.groupWidgetsByType()
+
+    // Get available widget types (from widgets or default)
+    const availableTypes = Array.from(widgetsByType.keys())
+
+    // Ensure we have a default container order
+    if (this.containerOrder.length === 0) {
+      this.containerOrder = availableTypes
+      this.saveContainerOrder()
+    }
+
+    // Add any new types that aren't in the order
+    availableTypes.forEach((type) => {
+      if (!this.containerOrder.includes(type)) {
+        this.containerOrder.push(type)
+      }
+    })
+
+    // Render containers in the specified order
+    this.containerOrder.forEach((type) => {
+      const widgets = widgetsByType.get(type)
+      if (!widgets || widgets.length === 0) {
+        return // Skip empty containers
+      }
+
+      const container = document.createElement('widget-container') as WidgetContainer
+      container.setAttribute('type', type)
+      containersArea.appendChild(container)
+
+      // Add widgets to the container
+      widgets.forEach((widget) => {
+        const widgetElement = this.createWidgetElement(widget)
+        if (widgetElement) {
+          container.addWidget(widgetElement)
+        }
+      })
+    })
+  }
+
+  /**
+   * Group widgets by their type
+   */
+  private groupWidgetsByType(): Map<WidgetType, Widget[]> {
+    const grouped = new Map<WidgetType, Widget[]>()
+
+    this.widgets.forEach((widget) => {
+      const type = widget.type
+      if (!grouped.has(type)) {
+        grouped.set(type, [])
+      }
+      grouped.get(type)!.push(widget)
+    })
+
+    return grouped
   }
 
   /**
@@ -185,7 +246,8 @@ export class WidgetGrid extends HTMLElement {
       const customEvent = event as CustomEvent<{ widgetId: string }>
       const widgetId = customEvent.detail.widgetId
       this.widgets = this.widgets.filter((w) => w.id !== widgetId)
-      // No need to re-render, the widget already removed itself from DOM
+      // Re-render to update container widget counts
+      this.render()
     }) as EventListener)
 
     // Listen for widget update events
@@ -199,6 +261,73 @@ export class WidgetGrid extends HTMLElement {
         widget.updated_at = new Date().toISOString()
       }
     }) as EventListener)
+
+    // Listen for container reorder events
+    this.addEventListener('container-reorder', ((event: Event) => {
+      const customEvent = event as CustomEvent<{
+        draggedType: WidgetType
+        targetType: WidgetType
+        position: 'before' | 'after'
+      }>
+      this.handleContainerReorder(
+        customEvent.detail.draggedType,
+        customEvent.detail.targetType,
+        customEvent.detail.position
+      )
+    }) as EventListener)
+  }
+
+  /**
+   * Handle container reordering via drag and drop
+   */
+  private handleContainerReorder(
+    draggedType: WidgetType,
+    targetType: WidgetType,
+    position: 'before' | 'after'
+  ): void {
+    // Remove the dragged type from its current position
+    const draggedIndex = this.containerOrder.indexOf(draggedType)
+    if (draggedIndex === -1) return
+
+    this.containerOrder.splice(draggedIndex, 1)
+
+    // Find the new position
+    const targetIndex = this.containerOrder.indexOf(targetType)
+    if (targetIndex === -1) return
+
+    // Insert at the new position
+    const insertIndex = position === 'before' ? targetIndex : targetIndex + 1
+    this.containerOrder.splice(insertIndex, 0, draggedType)
+
+    // Save the new order and re-render
+    this.saveContainerOrder()
+    this.render()
+  }
+
+  /**
+   * Load container order from localStorage
+   */
+  private loadContainerOrder(): void {
+    try {
+      const stored = localStorage.getItem(this.CONTAINER_ORDER_KEY)
+      if (stored) {
+        this.containerOrder = JSON.parse(stored) as WidgetType[]
+      }
+    } catch (error) {
+      console.error('Failed to load container order:', error)
+      this.containerOrder = []
+    }
+  }
+
+  /**
+   * Save container order to localStorage
+   */
+  private saveContainerOrder(): void {
+    try {
+      localStorage.setItem(this.CONTAINER_ORDER_KEY, JSON.stringify(this.containerOrder))
+    } catch (error) {
+      console.error('Failed to save container order:', error)
+    }
   }
 
   /**

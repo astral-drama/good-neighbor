@@ -20,7 +20,6 @@ export class ShortcutWidget extends BaseWidget {
   }
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
-    super.attributeChangedCallback(name, oldValue, newValue)
     // Auto-fetch favicon when URL changes
     if (name === 'url' && oldValue !== newValue) {
       this.autoFetchFavicon()

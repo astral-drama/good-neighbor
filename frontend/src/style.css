@@ -720,3 +720,131 @@ button:focus-visible {
 .add-homepage-btn:hover {
   background: rgba(100, 108, 255, 0.3);
 }
+
+/* Widget Type Container Styles */
+.widget-type-container {
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  cursor: grab;
+}
+
+.widget-type-container:active {
+  cursor: grabbing;
+}
+
+.widget-type-container.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.widget-type-container.drag-over {
+  border-color: #646cff;
+  background-color: rgba(100, 108, 255, 0.1);
+  box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.3);
+}
+
+.container-wrapper {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+}
+
+/* Drag Handle */
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+  cursor: grab;
+  padding: 1rem 0.5rem;
+  border-right: 1px solid transparent;
+}
+
+.widget-type-container:hover .drag-handle,
+.widget-type-container.drag-handle-visible .drag-handle {
+  opacity: 1;
+}
+
+.drag-handle:hover {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+  color: #646cff;
+}
+
+/* Container Content */
+.container-content {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+.container-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.container-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.widget-count {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+}
+
+/* Container Widgets Grid */
+.container-widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Light Mode Container Adjustments */
+@media (prefers-color-scheme: light) {
+  .widget-type-container {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .widget-type-container.drag-over {
+    border-color: #646cff;
+    background-color: rgba(100, 108, 255, 0.05);
+  }
+
+  .drag-handle {
+    color: rgba(0, 0, 0, 0.2);
+  }
+
+  .drag-handle:hover {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .container-header {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .container-header h3 {
+    color: #213547;
+  }
+
+  .widget-count {
+    color: #666;
+  }
+}
