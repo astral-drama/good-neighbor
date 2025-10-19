@@ -1,0 +1,1 @@
+../../stories/GOOD--9.md

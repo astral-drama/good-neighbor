@@ -36,6 +36,8 @@ This project follows clean code practices with:
 
 ### Using Make (recommended)
 
+#### Development:
+
 - `make install` - Create venv and install dependencies with uv
 - `make test` - Run tests with coverage
 - `make lint` - Run linting checks
@@ -45,6 +47,14 @@ This project follows clean code practices with:
 - `make clean` - Clean build artifacts
 - `make help` - Show all available commands
 
+#### Service Management (Production):
+
+- `make install-service` - Install and start systemd user service
+- `make uninstall-service` - Stop and remove systemd user service
+- `make service-status` - Check service status
+- `make service-logs` - View service logs (follows in real-time)
+- `make service-restart` - Restart the service
+
 ### Direct commands
 
 - `ruff format .` - Format code
@@ -52,6 +62,51 @@ This project follows clean code practices with:
 - `ruff check --fix .` - Auto-fix linting issues
 - `pytest --cov=. --cov-report=html` - Run tests with coverage
 - `pre-commit run --all-files` - Run all quality checks
+
+## Production Deployment
+
+### Installing as a System Service
+
+Good Neighbor can be installed as a systemd user service that automatically starts on boot:
+
+```bash
+# From a fresh clone:
+make install-service
+```
+
+This will:
+
+1. Create a Python virtual environment using uv
+1. Install all dependencies
+1. Configure a systemd user service
+1. Enable the service to start on boot
+1. Start the service immediately
+
+The server will be accessible at `http://localhost:8000` and will automatically restart on failure.
+
+### Managing the Service
+
+```bash
+# Check if service is running
+make service-status
+
+# View live service logs
+make service-logs
+
+# Restart the service (e.g., after pulling updates)
+make service-restart
+
+# Remove the service
+make uninstall-service
+```
+
+### Service Details
+
+- **Service Type**: systemd user service (runs as your user, not root)
+- **Auto-start**: Enabled by default after installation
+- **Auto-restart**: Service automatically restarts on failure
+- **Logs**: Available via `journalctl --user -u good-neighbor`
+- **Port**: Default 8000 (accessible at http://localhost:8000)
 
 ## Project Structure
 
