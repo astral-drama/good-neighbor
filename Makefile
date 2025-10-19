@@ -10,7 +10,7 @@ SERVICE_NAME := good-neighbor
 SYSTEMD_USER_DIR := $(HOME)/.config/systemd/user
 SERVICE_FILE := $(SYSTEMD_USER_DIR)/$(SERVICE_NAME).service
 # Production server port (different from dev port 8000 to avoid conflicts)
-PROD_PORT := 6000
+PROD_PORT := 3000
 
 # Colors for output
 GREEN := \033[0;32m

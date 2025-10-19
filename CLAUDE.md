@@ -89,14 +89,14 @@ This will:
 1. Enable the service to start on boot
 1. Start the service immediately
 
-The server will be accessible at `http://localhost:6000` (production) and will automatically restart on failure.
+The server will be accessible at `http://localhost:3000` (production) and will automatically restart on failure.
 
 **Note**: The service runs the FastAPI server which serves both the API (`/api/*`) and the built frontend static files from the `dist/` directory.
 
 **Port Configuration:**
 
 - **Development**: Port 8000 (Vite dev proxy + Python backend)
-- **Production**: Port 6000 (systemd service, configurable in Makefile `PROD_PORT`)
+- **Production**: Port 3000 (systemd service, configurable in Makefile `PROD_PORT`)
 - This allows running dev and production servers side-by-side without conflicts
 
 ### Managing the Service
@@ -124,7 +124,7 @@ make uninstall-service
 - **Auto-start**: Enabled by default after installation
 - **Auto-restart**: Service automatically restarts on failure
 - **Logs**: Available via `journalctl --user -u good-neighbor`
-- **Port**: 6000 (accessible at http://localhost:6000, configurable via `PROD_PORT` in Makefile)
+- **Port**: 3000 (accessible at http://localhost:3000, configurable via `PROD_PORT` in Makefile)
 
 ## Project Structure
 
