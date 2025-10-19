@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Cute home icon with rounded shapes -->
+
+  <!-- Main house body -->
+  <path d="M12 30 L12 54 C12 56 13 57 15 57 L49 57 C51 57 52 56 52 54 L52 30"
+        fill="#FFB4B4" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Roof -->
+  <path d="M8 32 L32 12 L56 32"
+        fill="#FF6B6B" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Chimney -->
+  <rect x="40" y="16" width="6" height="12" rx="1"
+        fill="#FF6B6B" stroke="#333" stroke-width="2"/>
+
+  <!-- Door -->
+  <rect x="24" y="38" width="16" height="19" rx="2"
+        fill="#8B5CF6" stroke="#333" stroke-width="2"/>
+
+  <!-- Door knob -->
+  <circle cx="36" cy="48" r="1.5" fill="#FCD34D"/>
+
+  <!-- Window left -->
+  <rect x="16" y="34" width="6" height="6" rx="1"
+        fill="#FFE5E5" stroke="#333" stroke-width="1.5"/>
+  <line x1="19" y1="34" x2="19" y2="40" stroke="#333" stroke-width="1"/>
+  <line x1="16" y1="37" x2="22" y2="37" stroke="#333" stroke-width="1"/>
+
+  <!-- Window right -->
+  <rect x="42" y="34" width="6" height="6" rx="1"
+        fill="#FFE5E5" stroke="#333" stroke-width="1.5"/>
+  <line x1="45" y1="34" x2="45" y2="40" stroke="#333" stroke-width="1"/>
+  <line x1="42" y1="37" x2="48" y2="37" stroke="#333" stroke-width="1"/>
+
+  <!-- Decorative heart above door -->
+  <path d="M32 32 L30 34 L32 36 L34 34 Z" fill="#FF6B6B"/>
+</svg>
