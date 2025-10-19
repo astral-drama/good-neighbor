@@ -65,6 +65,11 @@ This project follows clean code practices with:
 
 ## Production Deployment
 
+### Prerequisites
+
+- **Python 3.x** and **uv** (Python package installer)
+- **Node.js** and **npm** (for building the frontend)
+
 ### Installing as a System Service
 
 Good Neighbor can be installed as a systemd user service that automatically starts on boot:
@@ -77,12 +82,16 @@ make install-service
 This will:
 
 1. Create a Python virtual environment using uv
-1. Install all dependencies
+1. Install all Python dependencies
+1. Install frontend dependencies (npm install)
+1. Build the frontend (compiles to dist/)
 1. Configure a systemd user service
 1. Enable the service to start on boot
 1. Start the service immediately
 
 The server will be accessible at `http://localhost:8000` and will automatically restart on failure.
+
+**Note**: The service runs the FastAPI server which serves both the API (`/api/*`) and the built frontend static files from the `dist/` directory.
 
 ### Managing the Service
 
@@ -93,7 +102,10 @@ make service-status
 # View live service logs
 make service-logs
 
-# Restart the service (e.g., after pulling updates)
+# After pulling updates, rebuild frontend and restart
+cd frontend && npm run build && cd .. && make service-restart
+
+# Or if only backend changes:
 make service-restart
 
 # Remove the service

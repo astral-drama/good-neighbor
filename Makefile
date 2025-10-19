@@ -105,6 +105,10 @@ all: lint format type-check test
 # Install systemd user service
 install-service: install
 	@echo -e "$(YELLOW)Installing Good Neighbor systemd service...$(NC)"
+	@# Build frontend
+	@echo -e "$(YELLOW)Building frontend...$(NC)"
+	@cd frontend && npm install && npm run build
+	@echo -e "$(GREEN)✓ Frontend built to dist/$(NC)"
 	@# Create systemd user directory if it doesn't exist
 	@mkdir -p $(SYSTEMD_USER_DIR)
 	@# Generate service file from template
