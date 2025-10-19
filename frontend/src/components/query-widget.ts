@@ -49,18 +49,18 @@ export class QueryWidget extends BaseWidget {
 
     this.innerHTML = `
       <div class="widget-container query-widget">
-        <div class="query-header">
-          <span class="query-icon">${iconHtml}</span>
-          <h3 class="query-title">${this.escapeHtml(title)}</h3>
-        </div>
-        <form class="query-form">
+        <form class="query-form" style="display: flex; align-items: center; gap: 0.5rem; width: 100%;">
+          <span class="query-icon" title="${this.escapeHtml(title)}" style="flex-shrink: 0; display: flex; align-items: center; font-size: 1.5rem;">
+            ${iconHtml}
+          </span>
           <input
             type="text"
             class="query-input"
             placeholder="${this.escapeHtml(placeholder)}"
             autocomplete="off"
+            style="flex: 1; min-width: 0;"
           />
-          <button type="submit" class="query-submit-btn" title="Submit query">→</button>
+          <button type="submit" class="query-submit-btn" title="Submit query" style="flex-shrink: 0;">→</button>
         </form>
       </div>
     `
@@ -85,18 +85,18 @@ export class QueryWidget extends BaseWidget {
     this.innerHTML = `
       <div class="widget-container query-widget widget-hover">
         <div class="widget-action-buttons"></div>
-        <div class="query-header">
-          <span class="query-icon">${iconHtml}</span>
-          <h3 class="query-title">${this.escapeHtml(title)}</h3>
-        </div>
-        <form class="query-form">
+        <form class="query-form" style="display: flex; align-items: center; gap: 0.5rem; width: 100%;">
+          <span class="query-icon" title="${this.escapeHtml(title)}" style="flex-shrink: 0; display: flex; align-items: center; font-size: 1.5rem;">
+            ${iconHtml}
+          </span>
           <input
             type="text"
             class="query-input"
             placeholder="${this.escapeHtml(placeholder)}"
             autocomplete="off"
+            style="flex: 1; min-width: 0;"
           />
-          <button type="submit" class="query-submit-btn" title="Submit query">→</button>
+          <button type="submit" class="query-submit-btn" title="Submit query" style="flex-shrink: 0;">→</button>
         </form>
       </div>
     `
