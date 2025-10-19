@@ -55,6 +55,7 @@ export abstract class BaseWidget extends HTMLElement {
    */
   protected createDeleteButton(): HTMLButtonElement {
     const btn = document.createElement('button')
+    btn.type = 'button' // Prevent form submission
     btn.className = 'widget-btn widget-delete-btn'
     btn.textContent = '🗑️'
     btn.title = 'Delete widget'
@@ -70,6 +71,7 @@ export abstract class BaseWidget extends HTMLElement {
    */
   protected createEditButton(): HTMLButtonElement {
     const btn = document.createElement('button')
+    btn.type = 'button' // Prevent form submission
     btn.className = 'widget-btn widget-edit-btn'
     btn.textContent = '✏️'
     btn.title = 'Edit widget'
@@ -85,6 +87,7 @@ export abstract class BaseWidget extends HTMLElement {
    */
   protected createSaveButton(): HTMLButtonElement {
     const btn = document.createElement('button')
+    btn.type = 'button' // Prevent form submission
     btn.className = 'widget-btn widget-save-btn'
     btn.textContent = '💾'
     btn.title = 'Save changes'
@@ -100,6 +103,7 @@ export abstract class BaseWidget extends HTMLElement {
    */
   protected createCancelButton(): HTMLButtonElement {
     const btn = document.createElement('button')
+    btn.type = 'button' // Prevent form submission
     btn.className = 'widget-btn widget-cancel-btn'
     btn.textContent = '❌'
     btn.title = 'Cancel'
