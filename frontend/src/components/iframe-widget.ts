@@ -41,7 +41,7 @@ export class IframeWidget extends BaseWidget {
             src="${this.escapeHtml(url)}"
             width="${width}"
             height="${height}"
-            sandbox="allow-scripts allow-same-origin allow-forms"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-top-navigation allow-popups"
             loading="lazy"
             title="${this.escapeHtml(title)}"
           ></iframe>
@@ -76,7 +76,7 @@ export class IframeWidget extends BaseWidget {
             src="${this.escapeHtml(url)}"
             width="${width}"
             height="${height}"
-            sandbox="allow-scripts allow-same-origin allow-forms"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-top-navigation allow-popups"
             loading="lazy"
             title="${this.escapeHtml(title)}"
           ></iframe>
