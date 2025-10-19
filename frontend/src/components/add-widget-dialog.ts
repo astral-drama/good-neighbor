@@ -57,6 +57,7 @@ export class AddWidgetDialog extends HTMLElement {
                   <option value="">Select a type...</option>
                   <option value="iframe">Iframe Widget</option>
                   <option value="shortcut">Shortcut Widget</option>
+                  <option value="query">Query Widget</option>
                 </select>
               </div>
 
@@ -113,6 +114,28 @@ export class AddWidgetDialog extends HTMLElement {
                 <div class="form-group">
                   <label for="shortcut-description">Description:</label>
                   <textarea id="shortcut-description" name="shortcut_description" rows="3" placeholder="Optional"></textarea>
+                </div>
+              </div>
+
+              <div id="query-fields" class="type-specific-fields" style="display: none;">
+                <div class="form-group">
+                  <label for="query-url-template">URL Template:</label>
+                  <input type="text" id="query-url-template" name="query_url_template" placeholder="https://google.com/search?q={query}" />
+                  <small style="display: block; color: #666; font-size: 0.85rem; margin-top: 0.25rem;">
+                    Use {query} as placeholder for the search term
+                  </small>
+                </div>
+                <div class="form-group">
+                  <label for="query-title">Title:</label>
+                  <input type="text" id="query-title" name="query_title" placeholder="Search" />
+                </div>
+                <div class="form-group">
+                  <label for="query-icon">Icon (emoji):</label>
+                  <input type="text" id="query-icon" name="query_icon" value="🔍" />
+                </div>
+                <div class="form-group">
+                  <label for="query-placeholder">Placeholder Text:</label>
+                  <input type="text" id="query-placeholder" name="query_placeholder" value="Enter query..." />
                 </div>
               </div>
 
@@ -177,14 +200,17 @@ export class AddWidgetDialog extends HTMLElement {
   private updateVisibleFields(): void {
     const iframeFields = this.querySelector('#iframe-fields') as HTMLElement
     const shortcutFields = this.querySelector('#shortcut-fields') as HTMLElement
+    const queryFields = this.querySelector('#query-fields') as HTMLElement
 
-    if (iframeFields && shortcutFields) {
+    if (iframeFields && shortcutFields && queryFields) {
       iframeFields.style.display = this.selectedType === WidgetType.IFRAME ? 'block' : 'none'
       shortcutFields.style.display = this.selectedType === WidgetType.SHORTCUT ? 'block' : 'none'
+      queryFields.style.display = this.selectedType === WidgetType.QUERY ? 'block' : 'none'
 
       // Update required attributes
       this.updateRequiredFields('iframe', this.selectedType === WidgetType.IFRAME)
       this.updateRequiredFields('shortcut', this.selectedType === WidgetType.SHORTCUT)
+      this.updateRequiredFields('query', this.selectedType === WidgetType.QUERY)
     }
   }
 
@@ -192,11 +218,17 @@ export class AddWidgetDialog extends HTMLElement {
    * Update required attributes on fields
    */
   private updateRequiredFields(prefix: string, required: boolean): void {
-    const urlField = this.querySelector(`#${prefix}-url`) as HTMLInputElement
-    const titleField = this.querySelector(`#${prefix}-title`) as HTMLInputElement
-
-    if (urlField) urlField.required = required
-    if (titleField) titleField.required = required
+    if (prefix === 'query') {
+      const urlTemplateField = this.querySelector('#query-url-template') as HTMLInputElement
+      const titleField = this.querySelector('#query-title') as HTMLInputElement
+      if (urlTemplateField) urlTemplateField.required = required
+      if (titleField) titleField.required = required
+    } else {
+      const urlField = this.querySelector(`#${prefix}-url`) as HTMLInputElement
+      const titleField = this.querySelector(`#${prefix}-title`) as HTMLInputElement
+      if (urlField) urlField.required = required
+      if (titleField) titleField.required = required
+    }
   }
 
   /**
@@ -279,12 +311,19 @@ export class AddWidgetDialog extends HTMLElement {
           ? parseInt(formData.get('iframe_refresh') as string, 10)
           : null,
       }
-    } else {
+    } else if (this.selectedType === WidgetType.SHORTCUT) {
       properties = {
         url: formData.get('shortcut_url') as string,
         title: formData.get('shortcut_title') as string,
         icon: formData.get('shortcut_icon') as string,
         description: formData.get('shortcut_description') as string || null,
+      }
+    } else {
+      properties = {
+        url_template: formData.get('query_url_template') as string,
+        title: formData.get('query_title') as string,
+        icon: formData.get('query_icon') as string,
+        placeholder: formData.get('query_placeholder') as string,
       }
     }
 

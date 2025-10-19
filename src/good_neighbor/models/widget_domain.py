@@ -13,6 +13,7 @@ class WidgetType(str, Enum):
 
     IFRAME = "iframe"
     SHORTCUT = "shortcut"
+    QUERY = "query"
     # Future: WEATHER, RSS, CUSTOM, etc.
 
 

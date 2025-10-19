@@ -8,6 +8,7 @@ import type { Widget } from '../types/widget'
 import { WidgetType } from '../types/widget'
 import './iframe-widget'
 import './shortcut-widget'
+import './query-widget'
 import './widget-container'
 import { WidgetContainer } from './widget-container'
 
@@ -185,6 +186,10 @@ export class WidgetGrid extends HTMLElement {
         element = document.createElement('shortcut-widget')
         this.applyShortcutProperties(element, widget)
         break
+      case WidgetType.QUERY:
+        element = document.createElement('query-widget')
+        this.applyQueryProperties(element, widget)
+        break
       default: {
         const unknownType: string = widget.type as string
         console.warn(`Unknown widget type: ${unknownType}`)
@@ -234,6 +239,25 @@ export class WidgetGrid extends HTMLElement {
     }
     if (props.description && typeof props.description === 'string') {
       element.setAttribute('description', props.description)
+    }
+  }
+
+  /**
+   * Apply query widget properties as attributes
+   */
+  private applyQueryProperties(element: HTMLElement, widget: Widget): void {
+    const props = widget.properties
+    if (props.url_template && typeof props.url_template === 'string') {
+      element.setAttribute('url-template', props.url_template)
+    }
+    if (props.title && typeof props.title === 'string') {
+      element.setAttribute('title', props.title)
+    }
+    if (props.icon && typeof props.icon === 'string') {
+      element.setAttribute('icon', props.icon)
+    }
+    if (props.placeholder && typeof props.placeholder === 'string') {
+      element.setAttribute('placeholder', props.placeholder)
     }
   }
 

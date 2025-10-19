@@ -61,7 +61,8 @@ export class WidgetContainer extends HTMLElement {
     private getTypeDisplayName(): string {
         const displayNames: Record<WidgetType, string> = {
             [WidgetType.IFRAME]: 'Web Frames',
-            [WidgetType.SHORTCUT]: 'Shortcuts'
+            [WidgetType.SHORTCUT]: 'Shortcuts',
+            [WidgetType.QUERY]: 'Search'
         };
         return displayNames[this.containerType] || this.containerType;
     }

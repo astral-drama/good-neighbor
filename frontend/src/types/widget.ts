@@ -5,6 +5,7 @@
 export const WidgetType = {
   IFRAME: 'iframe',
   SHORTCUT: 'shortcut',
+  QUERY: 'query',
 } as const;
 
 export type WidgetType = typeof WidgetType[keyof typeof WidgetType];
@@ -31,6 +32,13 @@ export interface ShortcutWidgetProperties {
   title: string
   icon: string
   description?: string | null
+}
+
+export interface QueryWidgetProperties {
+  url_template: string
+  title: string
+  icon: string
+  placeholder: string
 }
 
 export interface CreateWidgetRequest {

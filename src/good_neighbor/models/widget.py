@@ -12,6 +12,7 @@ class WidgetType(str, Enum):
 
     IFRAME = "iframe"
     SHORTCUT = "shortcut"
+    QUERY = "query"
     # Future: WEATHER, RSS, CUSTOM, etc.
 
 
@@ -45,6 +46,17 @@ class ShortcutWidgetProperties(BaseModel):
     title: str = Field(..., description="Link title")
     icon: str = Field(default="🔗", description="Icon (emoji or URL)")
     description: Optional[str] = Field(default=None, description="Optional description")
+
+
+class QueryWidgetProperties(BaseModel):
+    """Properties for query widgets."""
+
+    url_template: str = Field(
+        ..., description="URL template with {query} placeholder (e.g., 'https://google.com/search?q={query}')"
+    )
+    title: str = Field(..., description="Widget title/label")
+    icon: str = Field(default="🔍", description="Icon (emoji or URL)")
+    placeholder: str = Field(default="Enter query...", description="Input field placeholder text")
 
 
 class CreateWidgetRequest(BaseModel):
