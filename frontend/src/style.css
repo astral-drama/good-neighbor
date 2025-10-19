@@ -156,7 +156,7 @@ button:focus-visible {
 .widget-container {
   background-color: #1a1a1a;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0.75rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.2s;
   position: relative;
@@ -302,14 +302,14 @@ button:focus-visible {
 
 /* Shortcut Widget Specific */
 .shortcut-widget {
-  min-height: 120px;
+  min-height: 80px;
 }
 
 .shortcut-link {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
   text-decoration: none;
   color: inherit;
   transition: background-color 0.2s;
@@ -321,21 +321,21 @@ button:focus-visible {
 }
 
 .shortcut-icon {
-  font-size: 3rem;
+  font-size: 2rem;
   flex-shrink: 0;
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #2a2a2a;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 /* Favicon image styling */
 .shortcut-icon .favicon-img {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
   border-radius: 4px;
 }
@@ -347,16 +347,16 @@ button:focus-visible {
 
 .shortcut-title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
 }
 
 .shortcut-description {
-  margin: 0.25rem 0 0 0;
-  font-size: 0.9rem;
+  margin: 0.15rem 0 0 0;
+  font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.6);
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 /* Dialog/Modal Styles */
@@ -723,7 +723,7 @@ button:focus-visible {
 
 /* Widget Type Container Styles */
 .widget-type-container {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -784,15 +784,15 @@ button:focus-visible {
 /* Container Content */
 .container-content {
   flex: 1;
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
 .container-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -813,7 +813,7 @@ button:focus-visible {
 .container-widgets {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 /* Light Mode Container Adjustments */
