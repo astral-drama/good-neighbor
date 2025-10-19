@@ -6,7 +6,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory={{WORKING_DIR}}
-ExecStart={{VENV_PYTHON}} -m uvicorn good_neighbor.server:app --host 0.0.0.0 --port 8000
+ExecStart={{VENV_PYTHON}} -m uvicorn good_neighbor.server:app --host 0.0.0.0 --port {{PORT}}
 Restart=on-failure
 RestartSec=5s
 StandardOutput=journal
@@ -15,6 +15,7 @@ StandardError=journal
 # Environment
 Environment="PATH={{VENV_DIR}}/bin:/usr/local/bin:/usr/bin:/bin"
 Environment="PYTHONUNBUFFERED=1"
+Environment="PORT={{PORT}}"
 
 # Security hardening (optional, uncomment if needed)
 # NoNewPrivileges=true

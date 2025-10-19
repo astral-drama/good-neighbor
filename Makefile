@@ -9,6 +9,8 @@ PROJECT_DIR := $(shell pwd)
 SERVICE_NAME := good-neighbor
 SYSTEMD_USER_DIR := $(HOME)/.config/systemd/user
 SERVICE_FILE := $(SYSTEMD_USER_DIR)/$(SERVICE_NAME).service
+# Production server port (different from dev port 8000 to avoid conflicts)
+PROD_PORT := 6000
 
 # Colors for output
 GREEN := \033[0;32m
@@ -115,6 +117,7 @@ install-service: install
 	@sed -e 's|{{WORKING_DIR}}|$(PROJECT_DIR)|g' \
 	     -e 's|{{VENV_PYTHON}}|$(PROJECT_DIR)/$(VENV_PYTHON)|g' \
 	     -e 's|{{VENV_DIR}}|$(PROJECT_DIR)/$(VENV_DIR)|g' \
+	     -e 's|{{PORT}}|$(PROD_PORT)|g' \
 	     systemd/$(SERVICE_NAME).service.template > $(SERVICE_FILE)
 	@echo -e "$(GREEN)✓ Service file created at $(SERVICE_FILE)$(NC)"
 	@# Reload systemd daemon
@@ -128,6 +131,7 @@ install-service: install
 	@echo -e "$(GREEN)✓ Service started$(NC)"
 	@echo ""
 	@echo -e "$(GREEN)Good Neighbor service installed successfully!$(NC)"
+	@echo "Server running on: http://localhost:$(PROD_PORT)"
 	@echo "Check status with: make service-status"
 	@echo "View logs with: make service-logs"
 

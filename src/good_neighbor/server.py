@@ -4,8 +4,9 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from good_neighbor.api.favicon import router as favicon_router
@@ -66,23 +67,26 @@ if dist_path.exists() and (dist_path / "assets").exists():
         logger.warning("Failed to mount assets directory")
 
 
-# SPA fallback route - TODO: Fix route priority issue with API routes
-# Temporarily disabled to allow API tests to pass
-# The catch-all route needs to be configured to not interfere with API routes
-# @app.get("/{full_path:path}", include_in_schema=False)
-# async def serve_spa(full_path: str) -> FileResponse:
-#     """Serve the SPA for all non-API routes (fallback handler)."""
-#     if full_path.startswith("api"):
-#         raise HTTPException(status_code=404, detail="Not found")
-#     if not dist_path.exists():
-#         raise HTTPException(status_code=503, detail="Static files not built")
-#     file_path = dist_path / full_path
-#     if file_path.exists() and file_path.is_file():
-#         return FileResponse(file_path)
-#     index_path = dist_path / "index.html"
-#     if index_path.exists():
-#         return FileResponse(index_path)
-#     raise HTTPException(status_code=404, detail="Not found")
+# SPA fallback route - serve index.html for root
+# Root route must be registered AFTER all API routers
+@app.get("/", include_in_schema=False)  # type: ignore[misc]
+async def serve_root() -> FileResponse:
+    """Serve index.html for the root path.
+
+    Returns:
+        FileResponse: The index.html file
+
+    Raises:
+        HTTPException: If dist/index.html doesn't exist
+    """
+    index_path = dist_path / "index.html"
+    if index_path.exists():
+        return FileResponse(index_path)
+
+    raise HTTPException(
+        status_code=503,
+        detail="index.html not found - run 'cd frontend && npm run build'",
+    )
 
 
 if __name__ == "__main__":
