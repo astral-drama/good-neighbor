@@ -1,5 +1,7 @@
 """YAML implementation of WidgetRepository."""
 
+from __future__ import annotations
+
 from typing import Callable
 
 from good_neighbor.effects import IO, Effect, ErrorDetails, Failure, Result, Success
