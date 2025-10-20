@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  base: process.env.VITE_BASE_PATH || (mode === 'production' ? '/good-neighbor/' : '/'),
   server: {
     proxy: {
       '/api': {
@@ -16,4 +17,4 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
   },
-})
+}))
