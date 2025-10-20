@@ -10,7 +10,7 @@ import type {
   Widget,
 } from '../types/widget'
 
-const API_BASE = '/api/widgets'
+const API_BASE = `${import.meta.env.BASE_URL}api/widgets`.replace('//', '/')
 
 /**
  * Fetch all widgets from the backend

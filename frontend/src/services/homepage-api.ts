@@ -4,8 +4,8 @@
 
 import type { Homepage, CreateHomepageRequest, UpdateHomepageRequest } from '../types/homepage'
 
-// Use relative path to work with base path configuration
-const API_BASE_URL = ''
+// Use base path from Vite configuration
+const API_BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, '')
 
 /**
  * Fetch all homepages for the current user
