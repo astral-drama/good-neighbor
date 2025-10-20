@@ -280,7 +280,8 @@ export class ShortcutWidget extends BaseWidget {
    */
   private async fetchFavicon(url: string): Promise<string | null> {
     try {
-      const response = await fetch(`/api/favicon/?url=${encodeURIComponent(url)}`)
+      const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '')
+      const response = await fetch(`${baseUrl}/api/favicon/?url=${encodeURIComponent(url)}`)
       if (!response.ok) {
         return null
       }
