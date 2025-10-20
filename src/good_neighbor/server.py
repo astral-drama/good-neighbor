@@ -20,11 +20,16 @@ logger = logging.getLogger(__name__)
 # Track server start time for uptime calculation
 SERVER_START_TIME = time.time()
 
+# Get base path from environment for reverse proxy support
+import os
+BASE_PATH = os.getenv("BASE_PATH", "")
+
 # Create FastAPI app
 app = FastAPI(
     title="Good Neighbor",
     description="Customizable homepage widget manager",
     version="0.1.0",
+    root_path=BASE_PATH,  # Support reverse proxy with base path
 )
 
 # Configure CORS for development
