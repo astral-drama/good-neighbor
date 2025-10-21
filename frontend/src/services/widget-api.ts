@@ -10,7 +10,7 @@ import type {
   Widget,
 } from '../types/widget'
 
-const API_BASE = `${import.meta.env.BASE_URL}api/widgets`.replace('//', '/')
+const API_BASE = `${import.meta.env.BASE_URL}api/widgets/`.replace('//', '/')
 
 /**
  * Fetch all widgets from the backend
@@ -45,7 +45,7 @@ export async function createWidget(request: CreateWidgetRequest): Promise<Widget
  * Get a specific widget by ID
  */
 export async function getWidget(widgetId: string): Promise<Widget> {
-  const response = await fetch(`${API_BASE}/${widgetId}`)
+  const response = await fetch(`${API_BASE}${widgetId}`)
   if (!response.ok) {
     throw new Error(`Failed to fetch widget: ${response.statusText}`)
   }
@@ -56,7 +56,7 @@ export async function getWidget(widgetId: string): Promise<Widget> {
  * Update widget properties
  */
 export async function updateWidget(widgetId: string, request: UpdateWidgetRequest): Promise<Widget> {
-  const response = await fetch(`${API_BASE}/${widgetId}`, {
+  const response = await fetch(`${API_BASE}${widgetId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ export async function updateWidgetPosition(
   widgetId: string,
   request: UpdatePositionRequest,
 ): Promise<Widget> {
-  const response = await fetch(`${API_BASE}/${widgetId}/position`, {
+  const response = await fetch(`${API_BASE}${widgetId}/position`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ export async function updateWidgetPosition(
  * Delete a widget
  */
 export async function deleteWidget(widgetId: string): Promise<DeleteWidgetResponse> {
-  const response = await fetch(`${API_BASE}/${widgetId}`, {
+  const response = await fetch(`${API_BASE}${widgetId}`, {
     method: 'DELETE',
   })
 
