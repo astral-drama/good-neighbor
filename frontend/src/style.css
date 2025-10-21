@@ -209,16 +209,13 @@ button:focus-visible {
   flex: 1;
 }
 
-/* For shortcut widgets - buttons in top-right corner */
+/* For shortcut widgets - hide action buttons by default */
 .shortcut-widget {
   position: relative;
 }
 
 .shortcut-widget .widget-action-buttons {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  z-index: 10;
+  display: none !important;
 }
 
 .widget-btn {
@@ -303,6 +300,15 @@ button:focus-visible {
 /* Shortcut Widget Specific - iOS Chicklet Style */
 .shortcut-widget {
   min-height: auto;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.shortcut-widget:hover {
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .shortcut-link {
@@ -311,7 +317,7 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 1rem 0.5rem;
+  padding: 0.75rem 0.5rem;
   text-decoration: none;
   color: inherit;
   transition: all 0.2s;
@@ -514,6 +520,10 @@ button:focus-visible {
     background-color: white;
     color: #213547;
     border-color: #ddd;
+  }
+
+  .shortcut-widget {
+    background: transparent !important;
   }
 
   .shortcut-icon {
@@ -831,6 +841,26 @@ button:focus-visible {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1rem;
+}
+
+/* Shortcut-specific grid - iOS style flow */
+.widget-type-container[type="shortcut"] .container-widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.5rem;
+  max-width: 100%;
+}
+
+@media (min-width: 500px) {
+  .widget-type-container[type="shortcut"] .container-widgets {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .widget-type-container[type="shortcut"] .container-widgets {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
 }
 
 /* Light Mode Container Adjustments */
