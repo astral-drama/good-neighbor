@@ -50,7 +50,7 @@ export class ShortcutWidget extends BaseWidget {
 
     this.innerHTML = `
       <div class="widget-container shortcut-widget">
-        <a href="${this.escapeHtml(url)}" class="shortcut-link" target="_blank" rel="noopener noreferrer">
+        <a href="${this.escapeHtml(url)}" class="shortcut-link">
           <div class="shortcut-icon">${iconHtml}</div>
           <div class="shortcut-content">
             <h3 class="shortcut-title">${this.escapeHtml(title)}</h3>
@@ -72,7 +72,7 @@ export class ShortcutWidget extends BaseWidget {
     this.innerHTML = `
       <div class="widget-container shortcut-widget widget-hover">
         <div class="widget-action-buttons"></div>
-        <a href="${this.escapeHtml(url)}" class="shortcut-link" target="_blank" rel="noopener noreferrer">
+        <a href="${this.escapeHtml(url)}" class="shortcut-link">
           <div class="shortcut-icon">${iconHtml}</div>
           <div class="shortcut-content">
             <h3 class="shortcut-title">${this.escapeHtml(title)}</h3>

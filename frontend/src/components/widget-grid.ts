@@ -17,6 +17,7 @@ export class WidgetGrid extends HTMLElement {
   private isLoading: boolean = false
   private containerOrder: WidgetType[] = []
   private readonly CONTAINER_ORDER_KEY = 'widget-container-order'
+  private isEditMode: boolean = false
 
   connectedCallback(): void {
     this.loadContainerOrder()
@@ -66,10 +67,15 @@ export class WidgetGrid extends HTMLElement {
     }
 
     this.innerHTML = `
-      <div class="widget-grid-container">
+      <div class="widget-grid-container ${this.isEditMode ? 'edit-mode' : ''}">
         <div class="widget-grid-header">
           <h1>Good Neighbor</h1>
-          <button class="add-widget-btn" title="Add widget">+ Add Widget</button>
+          <div class="header-buttons">
+            <button class="edit-mode-btn" title="${this.isEditMode ? 'Exit edit mode' : 'Edit shortcuts'}">
+              ${this.isEditMode ? 'Done' : 'Edit'}
+            </button>
+            <button class="add-widget-btn" title="Add widget">+ Add Widget</button>
+          </div>
         </div>
         <div class="widget-containers"></div>
       </div>
@@ -78,6 +84,15 @@ export class WidgetGrid extends HTMLElement {
     const containersArea = this.querySelector('.widget-containers')
     if (containersArea) {
       this.renderContainers(containersArea)
+    }
+
+    // Attach click handler to edit mode button
+    const editButton = this.querySelector('.edit-mode-btn')
+    if (editButton) {
+      editButton.addEventListener('click', () => {
+        this.isEditMode = !this.isEditMode
+        this.render()
+      })
     }
 
     // Attach click handler to add widget button
