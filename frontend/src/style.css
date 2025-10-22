@@ -103,6 +103,12 @@ button:focus-visible {
   text-align: left;
 }
 
+@media (max-width: 768px) {
+  #app {
+    padding: 0.75rem;
+  }
+}
+
 .widget-grid-container {
   width: 100%;
   max-width: 1400px;
@@ -936,6 +942,12 @@ button:focus-visible {
   padding: 1rem;
 }
 
+@media (max-width: 768px) {
+  .container-content {
+    padding: 0.5rem;
+  }
+}
+
 .container-header {
   display: flex;
   justify-content: space-between;
@@ -971,6 +983,13 @@ button:focus-visible {
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 0.5rem;
   max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .widget-type-container[type="shortcut"] .container-widgets {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.5rem;
+  }
 }
 
 @media (min-width: 500px) {
