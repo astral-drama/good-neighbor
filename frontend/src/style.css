@@ -126,21 +126,59 @@ button:focus-visible {
   align-items: center;
 }
 
+/* App container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
 /* Mobile optimized layout */
 @media (max-width: 768px) {
+  .app-container {
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    gap: 0;
+  }
+
+  /* Grid layout for proper order on mobile */
+  .app-header {
+    position: static;
+    grid-row: 2; /* Homepage selector in row 2 */
+    width: 100%;
+    margin: 0.5rem auto;
+    display: flex;
+    justify-content: center;
+  }
+
+  widget-grid {
+    display: contents; /* Make children participate in parent grid */
+  }
+
+  .widget-grid-container {
+    display: contents; /* Make children participate in parent grid */
+  }
+
   .widget-grid-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+    display: contents; /* Make children participate in parent grid */
   }
 
   .widget-grid-header h1 {
-    width: 100%;
+    grid-row: 1; /* Title in row 1 */
+    text-align: center;
+    margin: 0 0 1rem 0;
   }
 
   .header-buttons {
-    width: 100%;
+    grid-row: 3; /* Buttons in row 3 */
+    display: flex;
+    gap: 0.75rem;
     justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .widget-containers {
+    grid-row: 4; /* Content in row 4 */
   }
 }
 
@@ -658,16 +696,18 @@ button:focus-visible {
 .homepage-select {
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.87);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(100, 108, 255, 0.1);
+  color: #213547;
+  border: 1px solid #646cff;
   border-radius: 4px;
   cursor: pointer;
   min-width: 150px;
+  font-weight: 500;
 }
 
 .homepage-select:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(100, 108, 255, 0.15);
+  border-color: #535bf2;
 }
 
 .homepage-select:focus {
@@ -678,8 +718,8 @@ button:focus-visible {
 .manage-btn {
   padding: 0.5rem;
   font-size: 1.2rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(100, 108, 255, 0.1);
+  border: 1px solid #646cff;
   border-radius: 4px;
   cursor: pointer;
   display: flex;
@@ -690,7 +730,19 @@ button:focus-visible {
 }
 
 .manage-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(100, 108, 255, 0.15);
+  border-color: #535bf2;
+}
+
+/* Mobile: move homepage selector below title */
+@media (max-width: 768px) {
+  .app-header {
+    position: static;
+    width: 100%;
+    margin: 0 auto 1rem;
+    display: flex;
+    justify-content: center;
+  }
 }
 
 /* Homepage Management Dialog */

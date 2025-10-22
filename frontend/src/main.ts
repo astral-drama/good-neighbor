@@ -8,17 +8,23 @@ const app = document.querySelector<HTMLDivElement>('#app')!
 // Clear default content
 app.innerHTML = ''
 
+// Create main container
+const container = document.createElement('div')
+container.className = 'app-container'
+
 // Create header with homepage selector
 const header = document.createElement('header')
 header.className = 'app-header'
 
 const homepageSelector = new HomepageSelector()
 header.appendChild(homepageSelector)
-app.appendChild(header)
+container.appendChild(header)
 
 // Create and mount widget grid
 const widgetGrid = new WidgetGrid()
-app.appendChild(widgetGrid)
+container.appendChild(widgetGrid)
+
+app.appendChild(container)
 
 // Create and mount add widget dialog
 const addWidgetDialog = new AddWidgetDialog()
