@@ -136,10 +136,11 @@ async def serve_root() -> FileResponse:
 if __name__ == "__main__":
     import uvicorn
 
+    # Use port 3001 for development (production uses 3000, default dev was 8000)
     uvicorn.run(
         "good_neighbor.server:app",
         host="0.0.0.0",  # noqa: S104
-        port=8000,
+        port=3001,
         reload=True,
         log_level="info",
     )

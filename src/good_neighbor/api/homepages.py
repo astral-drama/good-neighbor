@@ -11,14 +11,12 @@ from pydantic import BaseModel
 from good_neighbor.effects import Failure, Success
 from good_neighbor.models import HomepageId
 from good_neighbor.services import HomepageService, UserService
-from good_neighbor.storage import create_yaml_repositories
+from good_neighbor.storage.shared import get_shared_repositories
 
 logger = logging.getLogger(__name__)
 
-# Initialize repositories and services
-# TODO: Use dependency injection in future
-repos = create_yaml_repositories()
-repos.storage.load()
+# Initialize repositories and services using shared storage
+repos = get_shared_repositories()
 
 user_service = UserService(repos.users)
 homepage_service = HomepageService(repos.homepages)

@@ -18,13 +18,12 @@ from good_neighbor.models.widget import (
 )
 from good_neighbor.models.widget_domain import Widget as DomainWidget
 from good_neighbor.models.widget_domain import WidgetType
-from good_neighbor.storage import create_yaml_repositories
+from good_neighbor.storage.shared import get_shared_repositories
 
 logger = logging.getLogger(__name__)
 
-# Initialize repositories and services
-repos = create_yaml_repositories()
-repos.storage.load()
+# Initialize repositories and services using shared storage
+repos = get_shared_repositories()
 
 router = APIRouter(prefix="/api/widgets", tags=["widgets"])
 
