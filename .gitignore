@@ -192,3 +192,6 @@ test-storage.yaml
 *.yaml.tmp
 test-browser.mjs
 test-screenshot.png
+
+# Playwright MCP screenshots and artifacts
+.playwright-mcp/
