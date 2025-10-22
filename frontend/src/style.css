@@ -115,6 +115,12 @@ button:focus-visible {
   margin: 0 auto;
 }
 
+@media (max-width: 768px) {
+  .widget-grid-container {
+    margin: 0;
+  }
+}
+
 .widget-grid-header {
   display: flex;
   justify-content: space-between;
@@ -920,6 +926,12 @@ button:focus-visible {
   cursor: grab;
   padding: 1rem 0.5rem;
   border-right: 1px solid transparent;
+}
+
+@media (max-width: 768px) {
+  .drag-handle {
+    display: none;
+  }
 }
 
 .widget-type-container:hover .drag-handle,
