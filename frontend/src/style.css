@@ -272,6 +272,25 @@ button:focus-visible {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* Widget drag and drop states */
+.edit-mode .widget-container {
+  cursor: grab;
+}
+
+.edit-mode .widget-container:active {
+  cursor: grabbing;
+}
+
+.dragging-widget {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.drag-over-widget {
+  border: 2px dashed #646cff;
+  background-color: rgba(100, 108, 255, 0.1);
+}
+
 .widget-header {
   margin-bottom: 0.75rem;
 }

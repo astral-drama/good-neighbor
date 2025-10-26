@@ -3,7 +3,7 @@
  * Container for managing and displaying all widgets
  */
 
-import { listWidgets } from '../services/widget-api'
+import { listWidgets, updateWidgetPosition } from '../services/widget-api'
 import type { Widget } from '../types/widget'
 import { WidgetType } from '../types/widget'
 import './iframe-widget'
@@ -314,6 +314,20 @@ export class WidgetGrid extends HTMLElement {
         customEvent.detail.position
       )
     }) as EventListener)
+
+    // Listen for widget reorder events
+    this.addEventListener('widget-reorder', ((event: Event) => {
+      const customEvent = event as CustomEvent<{
+        draggedWidgetId: string
+        targetWidgetId: string
+        position: 'before' | 'after'
+      }>
+      void this.handleWidgetReorder(
+        customEvent.detail.draggedWidgetId,
+        customEvent.detail.targetWidgetId,
+        customEvent.detail.position
+      )
+    }) as EventListener)
   }
 
   /**
@@ -341,6 +355,75 @@ export class WidgetGrid extends HTMLElement {
     // Save the new order and re-render
     this.saveContainerOrder()
     this.render()
+  }
+
+  /**
+   * Handle widget reordering within a container via drag and drop
+   */
+  private async handleWidgetReorder(
+    draggedWidgetId: string,
+    targetWidgetId: string,
+    position: 'before' | 'after'
+  ): Promise<void> {
+    const draggedWidget = this.widgets.find((w) => w.id === draggedWidgetId)
+    const targetWidget = this.widgets.find((w) => w.id === targetWidgetId)
+
+    if (!draggedWidget || !targetWidget) {
+      console.error('Widget not found for reordering')
+      return
+    }
+
+    // Only allow reordering within the same type
+    if (draggedWidget.type !== targetWidget.type) {
+      console.warn('Cannot reorder widgets of different types')
+      return
+    }
+
+    // Get all widgets of the same type, sorted by position
+    const sameTypeWidgets = this.widgets
+      .filter((w) => w.type === draggedWidget.type)
+      .sort((a, b) => a.position - b.position)
+
+    // Find indices
+    const draggedIndex = sameTypeWidgets.findIndex((w) => w.id === draggedWidgetId)
+    const targetIndex = sameTypeWidgets.findIndex((w) => w.id === targetWidgetId)
+
+    if (draggedIndex === -1 || targetIndex === -1) return
+
+    // Remove dragged widget from its current position
+    const [movedWidget] = sameTypeWidgets.splice(draggedIndex, 1)
+
+    // Calculate new insert position
+    let insertIndex = targetIndex
+    if (draggedIndex < targetIndex && position === 'after') {
+      insertIndex = targetIndex // Already adjusted by removal
+    } else if (draggedIndex < targetIndex && position === 'before') {
+      insertIndex = targetIndex - 1
+    } else if (draggedIndex > targetIndex && position === 'after') {
+      insertIndex = targetIndex + 1
+    } else {
+      insertIndex = targetIndex // before, and dragged is after target
+    }
+
+    // Insert at new position
+    sameTypeWidgets.splice(insertIndex, 0, movedWidget)
+
+    // Update positions in backend
+    try {
+      // Update positions for all widgets of this type
+      const updatePromises = sameTypeWidgets.map((widget, index) => {
+        widget.position = index
+        return updateWidgetPosition(widget.id, { position: index })
+      })
+
+      await Promise.all(updatePromises)
+
+      // Re-render to show new order
+      await this.loadWidgets()
+    } catch (error) {
+      console.error('Failed to update widget positions:', error)
+      alert('Failed to reorder widgets. Please try again.')
+    }
   }
 
   /**

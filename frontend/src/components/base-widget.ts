@@ -18,6 +18,7 @@ export abstract class BaseWidget extends HTMLElement {
     this.render()
     this.attachEventListeners()
     this.watchEditMode()
+    this.setupDragAndDrop()
   }
 
   disconnectedCallback(): void {
@@ -39,6 +40,10 @@ export abstract class BaseWidget extends HTMLElement {
 
     // Observe changes to the class attribute of the grid container
     this.editModeObserver = new MutationObserver(() => {
+      const inEditMode = this.isInEditMode()
+      // Set draggable attribute based on edit mode
+      this.draggable = inEditMode && this.state === 'normal'
+
       // Re-render when edit mode changes (only in normal state)
       if (this.state === 'normal') {
         this.render()
@@ -49,6 +54,9 @@ export abstract class BaseWidget extends HTMLElement {
       attributes: true,
       attributeFilter: ['class'],
     })
+
+    // Set initial draggable state
+    this.draggable = this.isInEditMode() && this.state === 'normal'
   }
 
   /**
@@ -210,5 +218,99 @@ export abstract class BaseWidget extends HTMLElement {
     container.className = 'widget-buttons'
     buttons.forEach((btn) => container.appendChild(btn))
     return container
+  }
+
+  /**
+   * Setup drag-and-drop for reordering widgets within containers
+   */
+  private setupDragAndDrop(): void {
+    // Make widget draggable when in edit mode
+    this.addEventListener('dragstart', this.handleDragStart.bind(this))
+    this.addEventListener('dragend', this.handleDragEnd.bind(this))
+    this.addEventListener('dragover', this.handleDragOver.bind(this))
+    this.addEventListener('drop', this.handleDrop.bind(this))
+    this.addEventListener('dragenter', this.handleDragEnter.bind(this))
+    this.addEventListener('dragleave', this.handleDragLeave.bind(this))
+  }
+
+  private handleDragStart(e: DragEvent): void {
+    // Only allow dragging in edit mode and normal state
+    if (!this.isInEditMode() || this.state !== 'normal') {
+      e.preventDefault()
+      return
+    }
+
+    if (!e.dataTransfer) return
+
+    this.classList.add('dragging-widget')
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('widget-id', this.widgetId)
+  }
+
+  private handleDragEnd(): void {
+    this.classList.remove('dragging-widget')
+    this.classList.remove('drag-over-widget')
+  }
+
+  private handleDragOver(e: DragEvent): void {
+    if (!this.isInEditMode()) return
+    if (!e.dataTransfer || !e.dataTransfer.types.includes('widget-id')) return
+
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  private handleDragEnter(e: DragEvent): void {
+    if (!this.isInEditMode()) return
+    if (!e.dataTransfer || !e.dataTransfer.types.includes('widget-id')) return
+
+    const draggedWidgetId = e.dataTransfer.getData('widget-id')
+    if (draggedWidgetId && draggedWidgetId !== this.widgetId) {
+      this.classList.add('drag-over-widget')
+    }
+  }
+
+  private handleDragLeave(e: DragEvent): void {
+    // Only remove if actually leaving the widget
+    const rect = this.getBoundingClientRect()
+    const x = e.clientX
+    const y = e.clientY
+
+    if (x < rect.left || x >= rect.right || y < rect.top || y >= rect.bottom) {
+      this.classList.remove('drag-over-widget')
+    }
+  }
+
+  private handleDrop(e: DragEvent): void {
+    if (!this.isInEditMode()) return
+    if (!e.dataTransfer) return
+
+    e.preventDefault()
+    e.stopPropagation()
+
+    const draggedWidgetId = e.dataTransfer.getData('widget-id')
+    if (!draggedWidgetId || draggedWidgetId === this.widgetId) {
+      this.classList.remove('drag-over-widget')
+      return
+    }
+
+    this.classList.remove('drag-over-widget')
+
+    // Determine drop position (above or below)
+    const rect = this.getBoundingClientRect()
+    const midpoint = rect.top + rect.height / 2
+    const dropPosition = e.clientY < midpoint ? 'before' : 'after'
+
+    // Dispatch event for widget grid to handle reordering
+    this.dispatchEvent(
+      new CustomEvent('widget-reorder', {
+        bubbles: true,
+        detail: {
+          draggedWidgetId,
+          targetWidgetId: this.widgetId,
+          position: dropPosition,
+        },
+      })
+    )
   }
 }
