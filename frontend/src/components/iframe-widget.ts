@@ -30,11 +30,13 @@ export class IframeWidget extends BaseWidget {
     const title = this.getAttribute('title') || 'Iframe Widget'
     const width = this.getAttribute('width') || '400'
     const height = this.getAttribute('height') || '300'
+    const inEditMode = this.isInEditMode()
 
     this.innerHTML = `
       <div class="widget-container iframe-widget">
         <div class="widget-header">
           <h3 class="widget-title">${this.escapeHtml(title)}</h3>
+          ${inEditMode ? '<div class="widget-action-buttons"></div>' : ''}
         </div>
         <div class="widget-content">
           <iframe
@@ -48,6 +50,15 @@ export class IframeWidget extends BaseWidget {
         </div>
       </div>
     `
+
+    // Add action buttons if in edit mode
+    if (inEditMode) {
+      const container = this.querySelector('.widget-action-buttons')
+      if (container) {
+        const buttonsDiv = this.createButtonContainer(this.createEditButton(), this.createDeleteButton())
+        container.appendChild(buttonsDiv)
+      }
+    }
 
     // Set up auto-refresh if configured
     const refreshInterval = this.getAttribute('refresh-interval')

@@ -11,11 +11,44 @@ export type WidgetState = 'normal' | 'hover' | 'edit'
 export abstract class BaseWidget extends HTMLElement {
   protected state: WidgetState = 'normal'
   protected widgetId: string = ''
+  private editModeObserver: MutationObserver | null = null
 
   connectedCallback(): void {
     this.widgetId = this.getAttribute('widget-id') || ''
     this.render()
     this.attachEventListeners()
+    this.watchEditMode()
+  }
+
+  disconnectedCallback(): void {
+    // Clean up observer when widget is removed
+    if (this.editModeObserver) {
+      this.editModeObserver.disconnect()
+      this.editModeObserver = null
+    }
+  }
+
+  /**
+   * Watch for edit mode changes on the grid container
+   */
+  private watchEditMode(): void {
+    const gridContainer = this.closest('.widget-grid-container')
+    if (!gridContainer) {
+      return
+    }
+
+    // Observe changes to the class attribute of the grid container
+    this.editModeObserver = new MutationObserver(() => {
+      // Re-render when edit mode changes (only in normal state)
+      if (this.state === 'normal') {
+        this.render()
+      }
+    })
+
+    this.editModeObserver.observe(gridContainer, {
+      attributes: true,
+      attributeFilter: ['class'],
+    })
   }
 
   /**
@@ -25,12 +58,21 @@ export abstract class BaseWidget extends HTMLElement {
   protected abstract render(): void
 
   /**
+   * Check if the widget grid is in edit mode
+   */
+  protected isInEditMode(): boolean {
+    const gridContainer = this.closest('.widget-grid-container')
+    return gridContainer?.classList.contains('edit-mode') ?? false
+  }
+
+  /**
    * Attach event listeners for state management
    */
   protected attachEventListeners(): void {
     // Add hover listeners for state transitions
+    // Only allow hover state if not in global edit mode
     this.addEventListener('mouseenter', () => {
-      if (this.state === 'normal') {
+      if (this.state === 'normal' && !this.isInEditMode()) {
         this.setState('hover')
       }
     })

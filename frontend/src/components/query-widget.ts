@@ -46,6 +46,7 @@ export class QueryWidget extends BaseWidget {
     const title = this.getAttribute('title') || 'Search'
     const icon = this.getAttribute('icon') || '🔍'
     const placeholder = this.getAttribute('placeholder') || 'Enter query...'
+    const inEditMode = this.isInEditMode()
 
     const iconHtml = this.renderIcon(icon)
 
@@ -63,9 +64,19 @@ export class QueryWidget extends BaseWidget {
             style="flex: 1; min-width: 0;"
           />
           <button type="submit" class="query-submit-btn" title="Submit query" style="flex-shrink: 0;">→</button>
+          ${inEditMode ? '<div class="widget-action-buttons" style="display: flex; gap: 0.5rem; margin-left: 0.5rem;"></div>' : ''}
         </form>
       </div>
     `
+
+    // Add action buttons if in edit mode
+    if (inEditMode) {
+      const container = this.querySelector('.widget-action-buttons')
+      if (container) {
+        const buttonsDiv = this.createButtonContainer(this.createEditButton(), this.createDeleteButton())
+        container.appendChild(buttonsDiv)
+      }
+    }
 
     // Add form submit handler
     const form = this.querySelector('.query-form') as HTMLFormElement
@@ -76,8 +87,10 @@ export class QueryWidget extends BaseWidget {
       })
     }
 
-    // Try to auto-focus after rendering
-    this.maybeAutoFocus()
+    // Try to auto-focus after rendering (only if not in edit mode)
+    if (!inEditMode) {
+      this.maybeAutoFocus()
+    }
   }
 
   private renderHoverView(): void {
