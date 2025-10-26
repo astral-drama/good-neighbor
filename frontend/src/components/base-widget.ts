@@ -39,8 +39,12 @@ export abstract class BaseWidget extends HTMLElement {
 
     // Observe changes to the class attribute of the grid container
     this.editModeObserver = new MutationObserver(() => {
+      // When edit mode changes, force widgets in hover state back to normal
+      if (this.state === 'hover' && this.isInEditMode()) {
+        this.setState('normal')
+      }
       // Re-render when edit mode changes (only in normal state)
-      if (this.state === 'normal') {
+      else if (this.state === 'normal') {
         this.render()
       }
     })
