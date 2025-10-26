@@ -39,12 +39,8 @@ export abstract class BaseWidget extends HTMLElement {
 
     // Observe changes to the class attribute of the grid container
     this.editModeObserver = new MutationObserver(() => {
-      // When edit mode changes, force widgets in hover state back to normal
-      if (this.state === 'hover' && this.isInEditMode()) {
-        this.setState('normal')
-      }
       // Re-render when edit mode changes (only in normal state)
-      else if (this.state === 'normal') {
+      if (this.state === 'normal') {
         this.render()
       }
     })
@@ -73,19 +69,8 @@ export abstract class BaseWidget extends HTMLElement {
    * Attach event listeners for state management
    */
   protected attachEventListeners(): void {
-    // Add hover listeners for state transitions
-    // Only allow hover state if not in global edit mode
-    this.addEventListener('mouseenter', () => {
-      if (this.state === 'normal' && !this.isInEditMode()) {
-        this.setState('hover')
-      }
-    })
-
-    this.addEventListener('mouseleave', () => {
-      if (this.state === 'hover') {
-        this.setState('normal')
-      }
-    })
+    // No hover listeners - edit buttons only show in edit mode
+    // Hover state is no longer used for showing edit buttons
   }
 
   /**
