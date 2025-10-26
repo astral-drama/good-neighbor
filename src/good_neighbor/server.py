@@ -111,6 +111,24 @@ if dist_path.exists() and (dist_path / "assets").exists():
         logger.warning("Failed to mount assets directory")
 
 
+# Serve static files from dist root (like favicon)
+@app.get("/home-icon.svg", include_in_schema=False)  # type: ignore[misc]
+async def serve_favicon() -> FileResponse:
+    """Serve the favicon.
+
+    Returns:
+        FileResponse: The home-icon.svg file
+
+    Raises:
+        HTTPException: If home-icon.svg doesn't exist
+    """
+    favicon_path = dist_path / "home-icon.svg"
+    if favicon_path.exists():
+        return FileResponse(favicon_path)
+
+    raise HTTPException(status_code=404, detail="Favicon not found")
+
+
 # SPA fallback route - serve index.html for root
 # Root route must be registered AFTER all API routers
 @app.get("/", include_in_schema=False)  # type: ignore[misc]

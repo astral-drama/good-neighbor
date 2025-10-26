@@ -126,6 +126,8 @@ button:focus-visible {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .widget-grid-header h1 {
@@ -687,10 +689,11 @@ button:focus-visible {
 
 /* Homepage Selector Styles */
 .app-header {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 100;
+  position: static;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
 }
 
 .homepage-selector {
