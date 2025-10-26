@@ -296,10 +296,31 @@ export abstract class BaseWidget extends HTMLElement {
 
     this.classList.remove('drag-over-widget')
 
-    // Determine drop position (above or below)
+    // Determine drop position
+    // For grid layouts (like shortcuts), we need to consider both X and Y position
     const rect = this.getBoundingClientRect()
-    const midpoint = rect.top + rect.height / 2
-    const dropPosition = e.clientY < midpoint ? 'before' : 'after'
+    const horizontalMidpoint = rect.left + rect.width / 2
+
+    // Determine if cursor is in left or right half
+    const isLeftHalf = e.clientX < horizontalMidpoint
+
+    // For grid layouts: if in same row (within vertical bounds), use horizontal position
+    // Otherwise use vertical position
+    let dropPosition: 'before' | 'after'
+
+    // If cursor is significantly above or below, use vertical position
+    const verticalThreshold = rect.height * 0.2 // 20% threshold
+    const isSignificantlyAbove = e.clientY < rect.top + verticalThreshold
+    const isSignificantlyBelow = e.clientY > rect.bottom - verticalThreshold
+
+    if (isSignificantlyAbove) {
+      dropPosition = 'before'
+    } else if (isSignificantlyBelow) {
+      dropPosition = 'after'
+    } else {
+      // In the middle vertical area, use horizontal position for grid layouts
+      dropPosition = isLeftHalf ? 'before' : 'after'
+    }
 
     // Dispatch event for widget grid to handle reordering
     this.dispatchEvent(
