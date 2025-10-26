@@ -474,7 +474,15 @@ button:focus-visible {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* Favicon image styling */
+/* Favicon image styling - general rule for all widgets */
+.favicon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* Shortcut widget specific sizing */
 .shortcut-icon .favicon-img {
   width: 48px;
   height: 48px;
