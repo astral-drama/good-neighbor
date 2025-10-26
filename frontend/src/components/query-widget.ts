@@ -9,6 +9,7 @@ import type { QueryWidgetProperties } from '../types/widget'
 export class QueryWidget extends BaseWidget {
   private faviconCache: Map<string, string> = new Map()
   private isFetchingFavicon = false
+  private hasAutoFocused = false
 
   static get observedAttributes(): string[] {
     return ['url-template', 'title', 'icon', 'placeholder']
@@ -17,6 +18,7 @@ export class QueryWidget extends BaseWidget {
   connectedCallback(): void {
     super.connectedCallback()
     this.autoFetchFavicon()
+    this.maybeAutoFocus()
   }
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
@@ -73,6 +75,9 @@ export class QueryWidget extends BaseWidget {
         this.handleQuerySubmit()
       })
     }
+
+    // Try to auto-focus after rendering
+    this.maybeAutoFocus()
   }
 
   private renderHoverView(): void {
@@ -393,6 +398,34 @@ export class QueryWidget extends BaseWidget {
 
     // Clear input after submission
     input.value = ''
+  }
+
+  /**
+   * Auto-focus the input field if this is the first Query widget on the page
+   */
+  private maybeAutoFocus(): void {
+    // Only auto-focus once per page load and only in normal state
+    if (this.hasAutoFocused || this.state !== 'normal') {
+      return
+    }
+
+    // Check if this is the first query widget in the DOM
+    const allQueryWidgets = document.querySelectorAll('query-widget')
+    const isFirstWidget = allQueryWidgets.length > 0 && allQueryWidgets[0] === this
+
+    if (!isFirstWidget) {
+      return
+    }
+
+    // Use setTimeout to ensure the input has been rendered
+    setTimeout(() => {
+      const input = this.querySelector('.query-input') as HTMLInputElement
+      if (input && this.state === 'normal') {
+        input.focus()
+        input.select()
+        this.hasAutoFocused = true
+      }
+    }, 100)
   }
 
   private escapeHtml(text: string): string {
