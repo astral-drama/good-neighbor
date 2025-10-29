@@ -350,6 +350,14 @@ button:focus-visible {
   z-index: 10;
 }
 
+.edit-mode .query-widget .widget-action-buttons {
+  display: flex !important;
+}
+
+.edit-mode .iframe-widget .widget-action-buttons {
+  display: flex !important;
+}
+
 /* Add visual indicator in edit mode */
 .edit-mode .shortcut-widget {
   position: relative;
