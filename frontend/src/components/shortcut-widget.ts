@@ -45,11 +45,13 @@ export class ShortcutWidget extends BaseWidget {
     const title = this.getAttribute('title') || 'Shortcut'
     const icon = this.getAttribute('icon') || '🔗'
     const description = this.getAttribute('description') || ''
+    const inEditMode = this.isInEditMode()
 
     const iconHtml = this.renderIcon(icon)
 
     this.innerHTML = `
       <div class="widget-container shortcut-widget">
+        ${inEditMode ? '<div class="widget-action-buttons"></div>' : ''}
         <a href="${this.escapeHtml(url)}" class="shortcut-link">
           <div class="shortcut-icon">${iconHtml}</div>
           <div class="shortcut-content">
@@ -59,6 +61,15 @@ export class ShortcutWidget extends BaseWidget {
         </a>
       </div>
     `
+
+    // Add action buttons if in edit mode
+    if (inEditMode) {
+      const container = this.querySelector('.widget-action-buttons')
+      if (container) {
+        const buttonsDiv = this.createButtonContainer(this.createEditButton(), this.createDeleteButton())
+        container.appendChild(buttonsDiv)
+      }
+    }
   }
 
   private renderHoverView(): void {
