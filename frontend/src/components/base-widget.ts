@@ -15,10 +15,11 @@ export abstract class BaseWidget extends HTMLElement {
 
   connectedCallback(): void {
     this.widgetId = this.getAttribute('widget-id') || ''
-    this.render()
     this.attachEventListeners()
     this.watchEditMode()
     this.setupDragAndDrop()
+    // Render after watchEditMode so isInEditMode() works correctly
+    this.render()
   }
 
   disconnectedCallback(): void {
