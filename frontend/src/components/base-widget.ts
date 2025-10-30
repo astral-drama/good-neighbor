@@ -87,6 +87,8 @@ export abstract class BaseWidget extends HTMLElement {
    */
   protected setState(newState: WidgetState): void {
     this.state = newState
+    // Disable dragging when in edit state
+    this.draggable = this.isInEditMode() && this.state === 'normal'
     this.render()
   }
 

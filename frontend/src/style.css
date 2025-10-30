@@ -272,6 +272,12 @@ button:focus-visible {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* Disable hover effects when in edit mode */
+.widget-container.widget-edit:hover {
+  transform: translate(-50%, -50%) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
 /* Widget drag and drop states */
 .edit-mode .widget-container {
   cursor: grab;
@@ -391,20 +397,22 @@ button:focus-visible {
 
 /* Widget Edit Mode */
 .widget-edit {
-  background-color: #2a2a2a;
+  background-color: #2a2a2a !important;
   /* Break out of grid constraints for better editing experience */
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-  z-index: 1001;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  padding: 1.5rem;
-  border-radius: 12px;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 90% !important;
+  max-width: 600px !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  z-index: 1001 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  padding: 1.5rem !important;
+  border-radius: 12px !important;
+  /* Prevent hover effects from edit mode */
+  pointer-events: auto !important;
 }
 
 /* Backdrop for edit mode */
