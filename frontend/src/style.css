@@ -273,9 +273,13 @@ button:focus-visible {
 }
 
 /* Disable hover effects when in edit mode */
-.widget-container.widget-edit:hover {
+.widget-container.widget-edit:hover,
+.shortcut-widget.widget-edit:hover,
+.iframe-widget.widget-edit:hover,
+.query-widget.widget-edit:hover {
   transform: translate(-50%, -50%) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  background-color: #f5f5f5 !important;
 }
 
 /* Widget drag and drop states */
@@ -396,8 +400,12 @@ button:focus-visible {
 }
 
 /* Widget Edit Mode */
-.widget-edit {
-  background-color: #2a2a2a !important;
+.widget-container.widget-edit,
+.shortcut-widget.widget-edit,
+.iframe-widget.widget-edit,
+.query-widget.widget-edit {
+  background-color: #f5f5f5 !important;
+  color: #213547 !important;
   /* Break out of grid constraints for better editing experience */
   position: fixed !important;
   top: 50% !important;
@@ -405,14 +413,43 @@ button:focus-visible {
   transform: translate(-50%, -50%) !important;
   width: 90% !important;
   max-width: 600px !important;
-  max-height: 90vh !important;
+  max-height: 85vh !important;
   overflow-y: auto !important;
   z-index: 1001 !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
   padding: 1.5rem !important;
   border-radius: 12px !important;
+  border: 2px solid #ddd !important;
   /* Prevent hover effects from edit mode */
   pointer-events: auto !important;
+  overflow: visible !important;
+}
+
+.widget-container.widget-edit .widget-header,
+.shortcut-widget.widget-edit .widget-header,
+.iframe-widget.widget-edit .widget-header,
+.query-widget.widget-edit .widget-header {
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 0.75rem !important;
+  border-bottom: 2px solid #e0e0e0 !important;
+  background-color: transparent !important;
+}
+
+.widget-container.widget-edit .widget-title,
+.shortcut-widget.widget-edit .widget-title,
+.iframe-widget.widget-edit .widget-title,
+.query-widget.widget-edit .widget-title {
+  color: #213547 !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+}
+
+.widget-container.widget-edit .widget-content,
+.shortcut-widget.widget-edit .widget-content,
+.iframe-widget.widget-edit .widget-content,
+.query-widget.widget-edit .widget-content {
+  background-color: transparent !important;
 }
 
 /* Backdrop for edit mode */
@@ -449,20 +486,22 @@ button:focus-visible {
 
 .form-group label {
   font-size: 0.9rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  color: #213547;
+  margin-bottom: 0.25rem;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
-  padding: 0.5rem;
+  padding: 0.75rem;
   border-radius: 6px;
-  border: 1px solid #444;
-  background-color: #1a1a1a;
-  color: white;
+  border: 2px solid #ddd;
+  background-color: white;
+  color: #213547;
   font-family: inherit;
   font-size: 1rem;
+  transition: border-color 0.2s;
 }
 
 .form-group input:focus,
@@ -470,6 +509,12 @@ button:focus-visible {
 .form-group select:focus {
   outline: none;
   border-color: #646cff;
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.1);
+}
+
+.widget-edit small {
+  color: #666 !important;
+  font-size: 0.85rem !important;
 }
 
 .form-buttons-container {
@@ -708,18 +753,9 @@ button:focus-visible {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .widget-edit {
-    background-color: white;
-    border: 1px solid #ddd;
-  }
+  /* .widget-edit styles are now always light, no override needed */
 
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    background-color: white;
-    color: #213547;
-    border-color: #ddd;
-  }
+  /* Form group styles are now always light, no override needed */
 
   .shortcut-widget {
     background: transparent !important;
