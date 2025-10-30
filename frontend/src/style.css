@@ -392,12 +392,45 @@ button:focus-visible {
 /* Widget Edit Mode */
 .widget-edit {
   background-color: #2a2a2a;
+  /* Break out of grid constraints for better editing experience */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 1001;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+/* Backdrop for edit mode */
+.widget-edit::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: -1;
 }
 
 .widget-edit-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  /* Enable text selection in form inputs */
+  user-select: auto;
+}
+
+.widget-edit-form input,
+.widget-edit-form textarea,
+.widget-edit-form select {
+  user-select: text;
 }
 
 .form-group {
@@ -668,7 +701,8 @@ button:focus-visible {
   }
 
   .widget-edit {
-    background-color: #e8e8e8;
+    background-color: white;
+    border: 1px solid #ddd;
   }
 
   .form-group input,
