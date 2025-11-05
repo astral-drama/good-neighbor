@@ -526,10 +526,16 @@ button:focus-visible {
 
 /* Iframe Widget Specific */
 .iframe-widget iframe {
-  width: 100%;
   border: none;
   border-radius: 8px;
   background-color: white;
+  display: block;
+}
+
+/* Make iframe widget container fit content instead of stretching */
+.iframe-widget .widget-container {
+  width: fit-content;
+  max-width: 100%;
 }
 
 /* Shortcut Widget Specific - iOS Chicklet Style */
@@ -1100,6 +1106,20 @@ button:focus-visible {
 
 /* Container Widgets Grid */
 .container-widgets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Iframe-specific grid - allow variable widths */
+.widget-type-container[type="iframe"] .container-widgets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Query-specific grid - uniform sizing */
+.widget-type-container[type="query"] .container-widgets {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1rem;
