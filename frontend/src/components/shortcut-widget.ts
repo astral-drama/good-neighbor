@@ -62,7 +62,6 @@ export class ShortcutWidget extends BaseWidget {
       </div>
     `
 
-    // Add action buttons if in edit mode
     if (inEditMode) {
       const container = this.querySelector('.widget-action-buttons')
       if (container) {

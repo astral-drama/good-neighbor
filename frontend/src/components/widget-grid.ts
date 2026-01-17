@@ -1,8 +1,10 @@
 /**
  * Widget grid component
  * Container for managing and displaying all widgets
+ * Uses SortableJS for reliable drag-and-drop functionality
  */
 
+import Sortable from 'sortablejs'
 import { listWidgets, updateWidgetPosition } from '../services/widget-api'
 import type { Widget } from '../types/widget'
 import { WidgetType } from '../types/widget'
@@ -18,12 +20,21 @@ export class WidgetGrid extends HTMLElement {
   private containerOrder: WidgetType[] = []
   private readonly CONTAINER_ORDER_KEY = 'widget-container-order'
   private isEditMode: boolean = false
+  private containerSortable: Sortable | null = null
 
   connectedCallback(): void {
     this.loadContainerOrder()
     this.render()
     void this.loadWidgets()
     this.attachEventListeners()
+  }
+
+  disconnectedCallback(): void {
+    // Clean up Sortable instance
+    if (this.containerSortable) {
+      this.containerSortable.destroy()
+      this.containerSortable = null
+    }
   }
 
   /**
@@ -84,6 +95,7 @@ export class WidgetGrid extends HTMLElement {
     const containersArea = this.querySelector('.widget-containers')
     if (containersArea) {
       this.renderContainers(containersArea)
+      this.updateContainerSortable(containersArea as HTMLElement)
     }
 
     // Attach click handler to edit mode button
@@ -146,6 +158,57 @@ export class WidgetGrid extends HTMLElement {
         }
       })
     })
+  }
+
+  /**
+   * Initialize or update Sortable for container reordering based on edit mode
+   */
+  private updateContainerSortable(containersArea: HTMLElement): void {
+    // Destroy existing instance first
+    if (this.containerSortable) {
+      this.containerSortable.destroy()
+      this.containerSortable = null
+    }
+
+    // Only create Sortable in edit mode
+    if (!this.isEditMode) {
+      return
+    }
+
+    this.containerSortable = Sortable.create(containersArea, {
+      animation: 150,
+      easing: 'cubic-bezier(1, 0, 0, 1)',
+      handle: '.drag-handle',
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      dragClass: 'sortable-drag',
+      onEnd: (evt) => {
+        this.handleContainerSortEnd(evt)
+      }
+    })
+  }
+
+  /**
+   * Handle the end of a container sort operation
+   */
+  private handleContainerSortEnd(evt: Sortable.SortableEvent): void {
+    const { oldIndex, newIndex } = evt
+
+    if (oldIndex === undefined || newIndex === undefined || oldIndex === newIndex) {
+      return
+    }
+
+    // Get container types in new order
+    const containersArea = this.querySelector('.widget-containers')
+    if (!containersArea) return
+
+    const containers = containersArea.querySelectorAll('widget-container')
+    const newOrder = Array.from(containers).map(
+      (container) => container.getAttribute('type') as WidgetType
+    )
+
+    this.containerOrder = newOrder
+    this.saveContainerOrder()
   }
 
   /**
@@ -301,128 +364,47 @@ export class WidgetGrid extends HTMLElement {
       }
     }) as EventListener)
 
-    // Listen for container reorder events
-    this.addEventListener('container-reorder', ((event: Event) => {
+    // Listen for widget reorder events from SortableJS
+    this.addEventListener('widgets-reordered', ((event: Event) => {
       const customEvent = event as CustomEvent<{
-        draggedType: WidgetType
-        targetType: WidgetType
-        position: 'before' | 'after'
+        containerType: WidgetType
+        widgetIds: (string | null)[]
+        oldIndex: number
+        newIndex: number
       }>
-      this.handleContainerReorder(
-        customEvent.detail.draggedType,
-        customEvent.detail.targetType,
-        customEvent.detail.position
-      )
-    }) as EventListener)
-
-    // Listen for widget reorder events
-    this.addEventListener('widget-reorder', ((event: Event) => {
-      const customEvent = event as CustomEvent<{
-        draggedWidgetId: string
-        targetWidgetId: string
-        position: 'before' | 'after'
-      }>
-      void this.handleWidgetReorder(
-        customEvent.detail.draggedWidgetId,
-        customEvent.detail.targetWidgetId,
-        customEvent.detail.position
+      void this.handleWidgetsReordered(
+        customEvent.detail.containerType,
+        customEvent.detail.widgetIds.filter((id): id is string => id !== null)
       )
     }) as EventListener)
   }
 
   /**
-   * Handle container reordering via drag and drop
+   * Handle widget reordering from SortableJS - receives ordered widget IDs
    */
-  private handleContainerReorder(
-    draggedType: WidgetType,
-    targetType: WidgetType,
-    position: 'before' | 'after'
-  ): void {
-    // Remove the dragged type from its current position
-    const draggedIndex = this.containerOrder.indexOf(draggedType)
-    if (draggedIndex === -1) return
-
-    this.containerOrder.splice(draggedIndex, 1)
-
-    // Find the new position
-    const targetIndex = this.containerOrder.indexOf(targetType)
-    if (targetIndex === -1) return
-
-    // Insert at the new position
-    const insertIndex = position === 'before' ? targetIndex : targetIndex + 1
-    this.containerOrder.splice(insertIndex, 0, draggedType)
-
-    // Save the new order and re-render
-    this.saveContainerOrder()
-    this.render()
-  }
-
-  /**
-   * Handle widget reordering within a container via drag and drop
-   */
-  private async handleWidgetReorder(
-    draggedWidgetId: string,
-    targetWidgetId: string,
-    position: 'before' | 'after'
+  private async handleWidgetsReordered(
+    _containerType: WidgetType,
+    widgetIds: string[]
   ): Promise<void> {
-    const draggedWidget = this.widgets.find((w) => w.id === draggedWidgetId)
-    const targetWidget = this.widgets.find((w) => w.id === targetWidgetId)
-
-    if (!draggedWidget || !targetWidget) {
-      console.error('Widget not found for reordering')
-      return
-    }
-
-    // Only allow reordering within the same type
-    if (draggedWidget.type !== targetWidget.type) {
-      console.warn('Cannot reorder widgets of different types')
-      return
-    }
-
-    // Get all widgets of the same type, sorted by position
-    const sameTypeWidgets = this.widgets
-      .filter((w) => w.type === draggedWidget.type)
-      .sort((a, b) => a.position - b.position)
-
-    // Find indices
-    const draggedIndex = sameTypeWidgets.findIndex((w) => w.id === draggedWidgetId)
-    const targetIndex = sameTypeWidgets.findIndex((w) => w.id === targetWidgetId)
-
-    if (draggedIndex === -1 || targetIndex === -1) return
-
-    // Remove dragged widget from its current position
-    const [movedWidget] = sameTypeWidgets.splice(draggedIndex, 1)
-
-    // Calculate new insert position
-    let insertIndex = targetIndex
-    if (draggedIndex < targetIndex && position === 'after') {
-      insertIndex = targetIndex // Already adjusted by removal
-    } else if (draggedIndex < targetIndex && position === 'before') {
-      insertIndex = targetIndex - 1
-    } else if (draggedIndex > targetIndex && position === 'after') {
-      insertIndex = targetIndex + 1
-    } else {
-      insertIndex = targetIndex // before, and dragged is after target
-    }
-
-    // Insert at new position
-    sameTypeWidgets.splice(insertIndex, 0, movedWidget)
-
-    // Update positions in backend
     try {
-      // Update positions for all widgets of this type
-      const updatePromises = sameTypeWidgets.map((widget, index) => {
-        widget.position = index
-        return updateWidgetPosition(widget.id, { position: index })
+      // Update positions based on the new order from Sortable
+      const updatePromises = widgetIds.map((widgetId, index) => {
+        const widget = this.widgets.find((w) => w.id === widgetId)
+        if (widget) {
+          widget.position = index
+        }
+        return updateWidgetPosition(widgetId, { position: index })
       })
 
       await Promise.all(updatePromises)
 
-      // Re-render to show new order
+      // Reload to ensure consistency with backend
       await this.loadWidgets()
     } catch (error) {
       console.error('Failed to update widget positions:', error)
       alert('Failed to reorder widgets. Please try again.')
+      // Reload to revert visual state
+      await this.loadWidgets()
     }
   }
 

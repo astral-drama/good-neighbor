@@ -282,23 +282,113 @@ button:focus-visible {
   background-color: #ffffff !important;
 }
 
-/* Widget drag and drop states */
-.edit-mode .widget-container {
-  cursor: grab;
+/* SortableJS drag and drop states */
+.sortable-ghost {
+  opacity: 0.4;
+  background-color: rgba(100, 108, 255, 0.15) !important;
+  border: 2px dashed #646cff !important;
 }
 
-.edit-mode .widget-container:active {
+.sortable-chosen {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.sortable-drag {
+  opacity: 1;
+  transform: scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Widget Type Container Styles */
+.widget-type-container {
+  margin-bottom: 2rem;
+}
+
+.widget-type-container .container-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.widget-type-container .drag-handle {
+  display: none;
+  color: #666;
+  padding: 0.5rem;
+  cursor: grab;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.edit-mode .widget-type-container .drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widget-type-container .drag-handle:hover {
+  background-color: rgba(100, 108, 255, 0.1);
+  color: #646cff;
+}
+
+.widget-type-container .drag-handle:active {
   cursor: grabbing;
 }
 
-.dragging-widget {
-  opacity: 0.5;
-  transform: scale(0.95);
+.widget-type-container .container-content {
+  flex: 1;
+  min-width: 0;
 }
 
-.drag-over-widget {
-  border: 2px dashed #646cff;
-  background-color: rgba(100, 108, 255, 0.1);
+.widget-type-container .container-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.widget-type-container .container-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.widget-type-container .widget-count {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.widget-type-container .container-widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+/* Iframe widgets need more space */
+.widget-type-container[type="iframe"] .container-widgets {
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+/* Query widgets also need more space */
+.widget-type-container[type="query"] .container-widgets {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+@media (prefers-color-scheme: light) {
+  .widget-type-container .container-header {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .widget-type-container .container-header h3 {
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .widget-type-container .widget-count {
+    color: rgba(0, 0, 0, 0.5);
+  }
 }
 
 .widget-header {
@@ -373,8 +463,13 @@ button:focus-visible {
   position: relative;
 }
 
-.edit-mode .shortcut-link {
-  opacity: 0.9;
+/* Action button container should not block drags, only the buttons themselves should be clickable */
+.edit-mode .shortcut-widget .widget-action-buttons {
+  pointer-events: none;
+}
+
+.edit-mode .shortcut-widget .widget-action-buttons .widget-btn {
+  pointer-events: auto;
 }
 
 .widget-btn {
